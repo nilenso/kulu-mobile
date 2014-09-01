@@ -32,10 +32,12 @@ public class MainActivity extends Activity {
         final Button uploadInvoice = (Button) findViewById(R.id.new_upload_button);
         ListView invoiceList = (ListView) findViewById(R.id.listView);
 
-        File[] files = getExternalFilesDir(Environment.DIRECTORY_PICTURES).listFiles();
-        filesList = new ArrayList<File>(Arrays.asList(files));
-        invoiceListAdapter = new InvoiceListAdapter(this, R.layout.invoices_list_item, filesList);
-        invoiceList.setAdapter(invoiceListAdapter);
+        File externalFilesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (externalFilesDir != null) {
+            filesList = new ArrayList<File>(Arrays.asList(externalFilesDir.listFiles()));
+            invoiceListAdapter = new InvoiceListAdapter(this, R.layout.invoices_list_item, filesList);
+            invoiceList.setAdapter(invoiceListAdapter);
+        }
 
         uploadInvoice.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

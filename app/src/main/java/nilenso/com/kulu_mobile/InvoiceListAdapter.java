@@ -29,8 +29,16 @@ public class InvoiceListAdapter extends ArrayAdapter<File> {
         TextView tv = (TextView) convertView.findViewById(R.id.invoice_file_name);
         tv.setText(getItem(position).toString());
 
-        ImageView iv = (ImageView) convertView.findViewById(R.id.upload_button);
-        iv.setImageBitmap(getImageThumbnail(getItem(position)));
+        File currentItem = getItem(position);
+
+        if (currentItem.exists()) {
+            ImageView iv = (ImageView) convertView.findViewById(R.id.upload_button);
+            iv.setImageBitmap(getImageThumbnail(currentItem));
+
+        } else {
+            remove(currentItem);
+            notifyDataSetChanged();
+        }
 
         return convertView;
     }
