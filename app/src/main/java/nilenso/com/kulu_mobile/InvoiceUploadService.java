@@ -40,6 +40,8 @@ public class InvoiceUploadService extends IntentService {
     private NotificationManager nm;
     private static final int NOTIFY_ID_UPLOAD = 4815;
 
+    private String LOG_TAG = "Invoice Upload Service";
+
     public InvoiceUploadService() {
         super("invoice-upload-service");
     }
@@ -94,7 +96,6 @@ public class InvoiceUploadService extends IntentService {
 
         try {
             s3Location = uploader.start();
-            broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
         } catch (UploadIterruptedException uie) {
             broadcastState(s3ObjectKey, -1, "Upload was interrupted");
         } catch (Exception e) {
@@ -105,8 +106,14 @@ public class InvoiceUploadService extends IntentService {
         try {
             KuluBackend backend = new KuluBackend();
             backend.createInvoice(getString(R.string.kulu_backend_service_url), s3Location);
+
+            boolean deleted = fileToUpload.delete();
+            if (!deleted) {
+                Log.w(LOG_TAG, "Couldn't remove the file" + fileToUpload.toString());
+            }
+
+            broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
         } catch (IOException e) {
-            Log.w("FAILED TO KULU BACKEND", e.getMessage());
             broadcastState(s3ObjectKey, -1, "Upload couldn't be finished as connection to Kulu Backend failed");
         }
     }
