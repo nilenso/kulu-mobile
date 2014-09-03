@@ -1,6 +1,7 @@
 package nilenso.com.kulu_mobile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,7 +34,11 @@ public class InvoiceListAdapter extends ArrayAdapter<File> {
         File currentItem = getItem(position);
 
         if (currentItem.exists()) {
-            ImageView iv = (ImageView) convertView.findViewById(R.id.upload_button);
+            Button b = (Button) convertView.findViewById(R.id.upload_button);
+            b.setTag(getItem(position).getPath());
+            b.setOnClickListener(uploadButtonHandler);
+
+            ImageView iv = (ImageView) convertView.findViewById(R.id.invoice_file_thumb);
             iv.setImageBitmap(getImageThumbnail(currentItem));
 
         } else {
@@ -46,4 +52,13 @@ public class InvoiceListAdapter extends ArrayAdapter<File> {
     private Bitmap getImageThumbnail(File path) {
         return ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(path.toString()), 90, 90);
     }
+
+    View.OnClickListener uploadButtonHandler = new View.OnClickListener() {
+        public void onClick(View v) {
+            String filePath = (String) v.getTag();
+            Intent intent = new Intent(getContext(), InvoiceUploadService.class);
+            intent.putExtra(InvoiceUploadService.ARG_FILE_PATH, filePath);
+            getContext().startService(intent);
+        }
+    };
 }

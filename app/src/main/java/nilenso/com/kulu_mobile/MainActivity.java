@@ -22,6 +22,7 @@ import java.util.Date;
 
 public class MainActivity extends Activity {
     private ArrayList<File> filesList;
+    private InvoiceListAdapter invoiceListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class MainActivity extends Activity {
         File externalFilesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         if (externalFilesDir != null) {
             filesList = new ArrayList<File>(Arrays.asList(externalFilesDir.listFiles()));
-            InvoiceListAdapter invoiceListAdapter = new InvoiceListAdapter(this, R.layout.invoices_list_item, filesList);
+            invoiceListAdapter = new InvoiceListAdapter(this, R.layout.invoices_list_item, filesList);
             invoiceList.setAdapter(invoiceListAdapter);
         }
 
@@ -43,6 +44,12 @@ public class MainActivity extends Activity {
                 dispatchTakePictureIntent();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        invoiceListAdapter.notifyDataSetChanged();
     }
 
     private void dispatchTakePictureIntent() {
