@@ -23,18 +23,18 @@
         android:id="@+id/invoice_file_timestamp">
     </TextView>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text="u"
-        android:id="@+id/upload_button"/>
-
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:id="@+id/invoice_file_thumb">
     </ImageView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/invoice_file_thumb"
+        android:text="u"
+        android:id="@+id/upload_button"/>
 
 </RelativeLayout>

@@ -3,13 +3,14 @@ package nilenso.com.kulu_mobile;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.support.v4.app.NotificationCompat;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -19,6 +20,7 @@ import com.readystatesoftware.simpl3r.Uploader;
 import com.readystatesoftware.simpl3r.Uploader.UploadProgressListener;
 
 import java.io.File;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -36,7 +38,7 @@ public class InvoiceUploadService extends IntentService {
     private Uploader uploader;
 
     private NotificationManager nm;
-    private static final int NOTIFY_ID_UPLOAD = 1337;
+    private static final int NOTIFY_ID_UPLOAD = 4815;
 
     public InvoiceUploadService() {
         super("invoice-upload-service");
@@ -88,14 +90,24 @@ public class InvoiceUploadService extends IntentService {
         nm.notify(NOTIFY_ID_UPLOAD, notification);
         broadcastState(s3ObjectKey, 0, msg);
 
+        String s3Location = null;
+
         try {
-            String s3Location = uploader.start();
+            s3Location = uploader.start();
             broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
         } catch (UploadIterruptedException uie) {
             broadcastState(s3ObjectKey, -1, "Upload was interrupted");
         } catch (Exception e) {
             e.printStackTrace();
             broadcastState(s3ObjectKey, -1, "Error: " + e.getMessage());
+        }
+
+        try {
+            KuluBackend backend = new KuluBackend();
+            backend.createInvoice(getString(R.string.kulu_backend_service_url), s3Location);
+        } catch (IOException e) {
+            Log.w("FAILED TO KULU BACKEND", e.getMessage());
+            broadcastState(s3ObjectKey, -1, "Upload couldn't be finished as connection to Kulu Backend failed");
         }
     }
 
@@ -127,7 +139,6 @@ public class InvoiceUploadService extends IntentService {
             }
         }
     };
-
 
     private Notification buildNotification(String msg, int progress) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
