@@ -77,8 +77,8 @@ public class InvoiceUploadService extends IntentService {
             public void progressChanged(ProgressEvent progressEvent,
                                         long bytesUploaded, int percentUploaded) {
 
-                // Notification notification = buildNotification(msg, percentUploaded);
-                // nm.notify(NOTIFY_ID_UPLOAD, notification);
+                Notification notification = buildNotification(msg, percentUploaded);
+                nm.notify(NOTIFY_ID_UPLOAD, notification);
                 broadcastState(s3ObjectKey, percentUploaded, msg);
             }
         });
@@ -154,7 +154,7 @@ public class InvoiceUploadService extends IntentService {
             byte messageDigest[] = digest.digest();
 
             // create Hex String
-            StringBuffer hexString = new StringBuffer();
+            StringBuilder hexString = new StringBuilder();
             for (byte aMessageDigest : messageDigest)
                 hexString.append(Integer.toHexString(0xFF & aMessageDigest));
             return hexString.toString();

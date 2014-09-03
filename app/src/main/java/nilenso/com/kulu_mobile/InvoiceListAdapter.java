@@ -2,9 +2,6 @@ package nilenso.com.kulu_mobile;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +25,13 @@ public class InvoiceListAdapter extends ArrayAdapter<File> {
                     .inflate(R.layout.invoices_list_item, parent, false);
         }
 
-        TextView tv = (TextView) convertView.findViewById(R.id.invoice_file_name);
-        tv.setText(getItem(position).toString());
-
         File currentItem = getItem(position);
+
+        TextView tv = (TextView) convertView.findViewById(R.id.invoice_file_name);
+        tv.setText(FileUtils.getBaseNameForFile(currentItem));
+
+        TextView tv1 = (TextView) convertView.findViewById(R.id.invoice_file_timestamp);
+        tv1.setText(FileUtils.getPrettyPrintedDate(currentItem));
 
         if (currentItem.exists()) {
             Button b = (Button) convertView.findViewById(R.id.upload_button);
@@ -39,7 +39,7 @@ public class InvoiceListAdapter extends ArrayAdapter<File> {
             b.setOnClickListener(uploadButtonHandler);
 
             ImageView iv = (ImageView) convertView.findViewById(R.id.invoice_file_thumb);
-            iv.setImageBitmap(getImageThumbnail(currentItem));
+            iv.setImageBitmap(FileUtils.getThumbnailForImage(currentItem));
 
         } else {
             remove(currentItem);
@@ -47,10 +47,6 @@ public class InvoiceListAdapter extends ArrayAdapter<File> {
         }
 
         return convertView;
-    }
-
-    private Bitmap getImageThumbnail(File path) {
-        return ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(path.toString()), 90, 90);
     }
 
     View.OnClickListener uploadButtonHandler = new View.OnClickListener() {
