@@ -1,7 +1,9 @@
 package nilenso.com.kulu_mobile;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +57,16 @@ public class InvoiceListAdapter extends ArrayAdapter<File> {
             Intent intent = new Intent(getContext(), InvoiceUploadService.class);
             intent.putExtra(InvoiceUploadService.ARG_FILE_PATH, filePath);
             getContext().startService(intent);
+
+            IntentFilter f = new IntentFilter(InvoiceUploadService.UPLOAD_FINISHED_ACTION);
+            v.getContext().registerReceiver(uploadFinishedReceiver, f);
+        }
+    };
+
+    public BroadcastReceiver uploadFinishedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            notifyDataSetChanged();
         }
     };
 }

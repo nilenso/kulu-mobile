@@ -29,8 +29,10 @@ public class InvoiceUploadService extends IntentService {
 
     public static final String UPLOAD_STATE_CHANGED_ACTION = "com.kulu_mobile.UPLOAD_STATE_CHANGED_ACTION";
     public static final String UPLOAD_CANCELLED_ACTION = "com.kulu_mobile.UPLOAD_CANCELLED_ACTION";
+    public static final String UPLOAD_FINISHED_ACTION = "com.kulu_mobile.UPLOAD_FINISHED_ACTION";
 
     public static final String S3KEY_EXTRA = "s3key";
+    public static final String S3LOCATION_EXTRA = "s3location";
     public static final String PERCENT_EXTRA = "percent";
     public static final String MSG_EXTRA = "msg";
 
@@ -113,6 +115,7 @@ public class InvoiceUploadService extends IntentService {
             }
 
             broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
+            broadcastFinished(s3Location);
         } catch (IOException e) {
             broadcastState(s3ObjectKey, -1, "Upload couldn't be finished as connection to Kulu Backend failed");
         }
@@ -133,6 +136,16 @@ public class InvoiceUploadService extends IntentService {
         b.putString(S3KEY_EXTRA, s3key);
         b.putInt(PERCENT_EXTRA, percent);
         b.putString(MSG_EXTRA, msg);
+
+        intent.putExtras(b);
+        sendBroadcast(intent);
+    }
+
+    private void broadcastFinished(String s3Location) {
+        Intent intent = new Intent(UPLOAD_FINISHED_ACTION);
+
+        Bundle b = new Bundle();
+        b.putString(S3LOCATION_EXTRA, s3Location);
 
         intent.putExtras(b);
         sendBroadcast(intent);
