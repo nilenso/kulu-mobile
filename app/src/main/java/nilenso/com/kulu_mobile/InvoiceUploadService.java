@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -31,18 +30,17 @@ public class InvoiceUploadService extends IntentService {
     public static final String UPLOAD_CANCELLED_ACTION = "com.kulu_mobile.UPLOAD_CANCELLED_ACTION";
     public static final String UPLOAD_FINISHED_ACTION = "com.kulu_mobile.UPLOAD_FINISHED_ACTION";
 
-    public static final String S3KEY_EXTRA = "s3key";
-    public static final String S3LOCATION_EXTRA = "s3location";
-    public static final String PERCENT_EXTRA = "percent";
-    public static final String MSG_EXTRA = "msg";
+    public static final String S3KEY_EXTRA = "com.kulu_mobile.s3key";
+    public static final String S3LOCATION_EXTRA = "com.kulu_mobile.s3location";
+    public static final String FILEUPLOADED_EXTRA = "com.kulu_mobile.filetoremove";
+    public static final String PERCENT_EXTRA = "com.kulu_mobile.percent";
+    public static final String MSG_EXTRA = "com.kulu_mobile.msg";
 
     private AmazonS3Client s3Client;
     private Uploader uploader;
 
     private NotificationManager nm;
     private static final int NOTIFY_ID_UPLOAD = 4815;
-
-    private String LOG_TAG = "Invoice Upload Service";
 
     public InvoiceUploadService() {
         super("invoice-upload-service");
@@ -82,7 +80,6 @@ public class InvoiceUploadService extends IntentService {
             @Override
             public void progressChanged(ProgressEvent progressEvent,
                                         long bytesUploaded, int percentUploaded) {
-
                 Notification notification = buildNotification(msg, percentUploaded);
                 nm.notify(NOTIFY_ID_UPLOAD, notification);
                 broadcastState(s3ObjectKey, percentUploaded, msg);
@@ -106,16 +103,10 @@ public class InvoiceUploadService extends IntentService {
         }
 
         try {
-            KuluBackend backend = new KuluBackend();
-            backend.createInvoice(getString(R.string.kulu_backend_service_url), s3Location);
-
-            boolean deleted = fileToUpload.delete();
-            if (!deleted) {
-                Log.w(LOG_TAG, "Couldn't remove the file" + fileToUpload.toString());
-            }
-
+            uploadInvoice(s3Location);
             broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
-            broadcastFinished(s3Location);
+            nm.notify(NOTIFY_ID_UPLOAD, buildNotification("Upload finished", 100));
+            broadcastFinished(s3Location, fileToUpload.toString());
         } catch (IOException e) {
             broadcastState(s3ObjectKey, -1, "Upload couldn't be finished as connection to Kulu Backend failed");
         }
@@ -130,23 +121,24 @@ public class InvoiceUploadService extends IntentService {
     }
 
     private void broadcastState(String s3key, int percent, String msg) {
-        Intent intent = new Intent(UPLOAD_STATE_CHANGED_ACTION);
-
         Bundle b = new Bundle();
         b.putString(S3KEY_EXTRA, s3key);
         b.putInt(PERCENT_EXTRA, percent);
         b.putString(MSG_EXTRA, msg);
 
-        intent.putExtras(b);
-        sendBroadcast(intent);
+        broadcast(UPLOAD_STATE_CHANGED_ACTION, b);
     }
 
-    private void broadcastFinished(String s3Location) {
-        Intent intent = new Intent(UPLOAD_FINISHED_ACTION);
-
+    private void broadcastFinished(String s3Location, String fileUploaded) {
         Bundle b = new Bundle();
         b.putString(S3LOCATION_EXTRA, s3Location);
+        b.putString(FILEUPLOADED_EXTRA, fileUploaded);
 
+        broadcast(UPLOAD_FINISHED_ACTION, b);
+    }
+
+    private void broadcast(String intentContent, Bundle b) {
+        Intent intent = new Intent(intentContent);
         intent.putExtras(b);
         sendBroadcast(intent);
     }
@@ -175,6 +167,11 @@ public class InvoiceUploadService extends IntentService {
         builder.setContentIntent(contentIntent);
 
         return builder.build();
+    }
+
+    private void uploadInvoice(String s3Location) throws IOException {
+        KuluBackend backend = new KuluBackend();
+        backend.createInvoice(getString(R.string.kulu_backend_service_url), s3Location);
     }
 
     private String md5(String s) {
