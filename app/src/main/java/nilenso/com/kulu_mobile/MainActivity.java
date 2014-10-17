@@ -1,15 +1,20 @@
 package nilenso.com.kulu_mobile;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,6 +29,7 @@ import java.util.Date;
 public class MainActivity extends ActionBarActivity {
     private ArrayList<File> filesList;
     private InvoiceListAdapter invoiceListAdapter;
+    private String LOG_TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +43,25 @@ public class MainActivity extends ActionBarActivity {
             filesList = new ArrayList<File>(Arrays.asList(externalFilesDir.listFiles()));
             invoiceListAdapter = new InvoiceListAdapter(this, R.layout.invoices_list_item, filesList);
             invoiceList.setAdapter(invoiceListAdapter);
+
+            invoiceList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+            invoiceList.setMultiChoiceModeListener(multiChoiceModeListener);
         }
+
+        IntentFilter f = new IntentFilter(InvoiceUploadService.UPLOAD_FINISHED_ACTION);
+        registerReceiver(uploadFinishedReceiver, f);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         invoiceListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(uploadFinishedReceiver);
+        super.onDestroy();
     }
 
     private void dispatchTakePictureIntent() {
@@ -55,24 +73,49 @@ public class MainActivity extends ActionBarActivity {
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                Log.w("IOException", "Problem in saving the file" + ex.getMessage());
+                Log.e(LOG_TAG, "Problem in saving the file" + ex.getMessage());
             }
 
-            // Continue only if the File was successfully created
+            // continue only if the File was successfully created
             if (photoFile != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
                 startActivityForResult(takePictureIntent, 1);
 
                 // add the new file to the top of the main list of files
-                filesList.add(0, photoFile);
+                filesList.add(photoFile);
             }
         }
     }
+
+    public BroadcastReceiver uploadFinishedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle extra = intent.getExtras();
+            File fileToRemove = new File(extra.getString(InvoiceUploadService.FILEUPLOADED_EXTRA));
+
+            if (!fileToRemove.delete()) {
+                Log.e(LOG_TAG, "Couldn't remove the file" + fileToRemove.toString());
+            }
+
+            File itemToRemove = null;
+            for (File item : filesList) {
+                if (item.toString().equals(fileToRemove.toString())) {
+                    itemToRemove = item;
+                }
+            }
+            if(itemToRemove != null) {
+                filesList.remove(itemToRemove);
+            }
+
+            invoiceListAdapter.notifyDataSetChanged();
+        }
+    };
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
 
+        Log.i(LOG_TAG, "Creating image file...");
         mediaFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) +
                 File.separator +
                 "IMG_" + timeStamp + ".jpg");
@@ -89,13 +132,49 @@ public class MainActivity extends ActionBarActivity {
 
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(getApplicationContext(),
-                        "No new images added.", Toast.LENGTH_SHORT).show();
+                        "No new image was added.", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getApplicationContext(),
                         "Failed to capture image.", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
+    AbsListView.MultiChoiceModeListener multiChoiceModeListener = new AbsListView.MultiChoiceModeListener() {
+        @Override
+        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+            // Here you can do something when items are selected/de-selected,
+            // such as update the title in the CAB
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            // Respond to clicks on the actions in the CAB
+            switch (item.getItemId()) {
+                case R.id.action_upload:
+                    dispatchTakePictureIntent();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.main_activity_selection_actions, menu);
+
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) { }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

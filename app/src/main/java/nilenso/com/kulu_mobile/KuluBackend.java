@@ -21,9 +21,10 @@ public class KuluBackend {
     }
 
     public String createInvoice(String url, String s3Location) throws IOException {
+        String requestKey = "storage_key";
         Map<String, String> requestMap = new HashMap<String, String>();
 
-        requestMap.put("storage_key", s3Location);
+        requestMap.put(requestKey, s3Location);
         JSONObject json = new JSONObject(requestMap);
 
         RequestBody body = RequestBody.create(JSON, json.toString());

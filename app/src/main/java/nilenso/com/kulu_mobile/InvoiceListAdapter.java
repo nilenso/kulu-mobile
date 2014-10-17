@@ -1,11 +1,7 @@
 package nilenso.com.kulu_mobile;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +16,8 @@ import java.util.ArrayList;
 public class InvoiceListAdapter extends ArrayAdapter<File> {
     private String LOG_TAG = "InvoiceListAdapter";
 
-    public InvoiceListAdapter(Context ctx, int viewResourceId, ArrayList<File> files) {
-        super(ctx, viewResourceId, files);
+    public InvoiceListAdapter(Context ctx, int viewResourceId, ArrayList<File> fs) {
+        super(ctx, viewResourceId, fs);
     }
 
     @Override
@@ -42,17 +38,11 @@ public class InvoiceListAdapter extends ArrayAdapter<File> {
         if (currentItem.exists()) {
             Button b = (Button) convertView.findViewById(R.id.upload_button);
             // so that we can access the item inside the handler
-            b.setTag(getItem(position).getPath());
-
+            b.setTag(currentItem.getPath());
             b.setOnClickListener(uploadButtonHandler);
 
             ImageView iv = (ImageView) convertView.findViewById(R.id.invoice_file_thumb);
             iv.setImageBitmap(FileUtils.getThumbnailForImage(currentItem));
-        } else {
-            Log.i(LOG_TAG, "Removing item: " + currentItem.toString() + " from list");
-            remove(currentItem);
-
-            notifyDataSetChanged();
         }
 
         return convertView;
@@ -64,21 +54,6 @@ public class InvoiceListAdapter extends ArrayAdapter<File> {
             Intent intent = new Intent(getContext(), InvoiceUploadService.class);
             intent.putExtra(InvoiceUploadService.ARG_FILE_PATH, filePath);
             getContext().startService(intent);
-
-            IntentFilter f = new IntentFilter(InvoiceUploadService.UPLOAD_FINISHED_ACTION);
-            v.getContext().registerReceiver(uploadFinishedReceiver, f);
-        }
-    };
-
-    public BroadcastReceiver uploadFinishedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle extra = intent.getExtras();
-            File fileToRemove = new File(extra.getString(InvoiceUploadService.FILEUPLOADED_EXTRA));
-
-            if (!fileToRemove.delete()) {
-                Log.e(LOG_TAG, "Couldn't remove the file" + fileToRemove.toString());
-            }
         }
     };
 }
