@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -66,7 +65,7 @@ public class InvoiceUploadService extends IntentService {
 
         File fileToUpload = new File(filePath);
 
-        final String s3ObjectKey = md5(filePath);
+        final String s3ObjectKey = FileUtils.getLastPartOfFile(filePath);
 
         String s3BucketName = getString(R.string.kulu_s3_tmp_bucket);
 
@@ -109,6 +108,7 @@ public class InvoiceUploadService extends IntentService {
             broadcastFinished(s3Location, fileToUpload.toString());
         } catch (IOException e) {
             broadcastState(s3ObjectKey, -1, "Upload couldn't be finished as connection to Kulu Backend failed");
+            nm.notify(NOTIFY_ID_UPLOAD + 1, buildNotification("Upload couldn't be finished as the connection to the backend failed.", -1));
         }
     }
 
@@ -153,16 +153,18 @@ public class InvoiceUploadService extends IntentService {
     };
 
     private Notification buildNotification(String msg, int progress) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        Notification.Builder builder = new Notification.Builder(this);
         builder.setWhen(System.currentTimeMillis());
         builder.setTicker(msg);
         builder.setContentTitle(getString(R.string.app_name));
-        builder.setContentText(msg);
+        builder.setAutoCancel(true);
         builder.setSmallIcon(R.drawable.ic_launcher);
         builder.setOngoing(true);
         builder.setProgress(100, progress, false);
+        builder.setStyle(new Notification.BigTextStyle().bigText(msg));
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         builder.setContentIntent(contentIntent);
 

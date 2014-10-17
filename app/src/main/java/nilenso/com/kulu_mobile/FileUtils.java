@@ -1,9 +1,6 @@
 package nilenso.com.kulu_mobile;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
-
+import org.apache.commons.io.FilenameUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -11,10 +8,6 @@ import org.joda.time.format.DateTimeFormatter;
 import java.io.File;
 
 public class FileUtils {
-    public static Bitmap getThumbnailForImage(File file) {
-        return ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(file.toString()), 90, 90);
-    }
-
     public static String getPrettyPrintedDate(File file) {
         DateTime dt = new DateTime(file.lastModified());
         DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM dd, yyyy, hh:mm a");
@@ -28,5 +21,9 @@ public class FileUtils {
             name = name.substring(0, pos);
         }
         return name;
+    }
+
+    public static String getLastPartOfFile(String file) {
+        return FilenameUtils.getBaseName(file) + "." + FilenameUtils.getExtension(file);
     }
 }

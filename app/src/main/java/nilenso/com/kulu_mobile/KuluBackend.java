@@ -24,7 +24,8 @@ public class KuluBackend {
         String requestKey = "storage_key";
         Map<String, String> requestMap = new HashMap<String, String>();
 
-        requestMap.put(requestKey, s3Location);
+        requestMap.put(requestKey, FileUtils.getLastPartOfFile(s3Location));
+
         JSONObject json = new JSONObject(requestMap);
 
         RequestBody body = RequestBody.create(JSON, json.toString());

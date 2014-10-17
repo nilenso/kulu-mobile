@@ -25,22 +25,11 @@
         android:id="@+id/invoice_file_timestamp">
     </TextView>
 
-    <ImageView
-        android:layout_width="48dp"
-        android:layout_height="fill_parent"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:scaleType="fitXY"
-        android:padding="2dp"
-        android:src="@drawable/ic_launcher"
-        android:id="@+id/invoice_file_thumb">
-    </ImageView>
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/invoice_file_thumb"
-        android:layout_toStartOf="@id/invoice_file_thumb"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:text="u"
         android:id="@+id/upload_button"/>
 

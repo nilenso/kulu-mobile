@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
@@ -40,9 +39,6 @@ public class InvoiceListAdapter extends ArrayAdapter<File> {
             // so that we can access the item inside the handler
             b.setTag(currentItem.getPath());
             b.setOnClickListener(uploadButtonHandler);
-
-            ImageView iv = (ImageView) convertView.findViewById(R.id.invoice_file_thumb);
-            iv.setImageBitmap(FileUtils.getThumbnailForImage(currentItem));
         }
 
         return convertView;
