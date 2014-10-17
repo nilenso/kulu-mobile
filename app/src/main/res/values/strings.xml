@@ -4,6 +4,7 @@
     <string name="app_name">Kulu</string>
     <string name="action_settings">Settings</string>
     <string name="camera_invoice">Scan</string>
+    <string name="upload_button">Button to the image to the backend</string>
     <string name="kulu_s3_tmp_bucket">prod_kulu_invoices_tmp</string>
     <string name="kulu_s3_access_key_id">AKIAISBVLNHICKONBE6Q</string>
     <string name="kulu_s3_secret_access_key">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</string>

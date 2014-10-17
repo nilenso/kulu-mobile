@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.io.File;
@@ -33,7 +33,7 @@ public class InvoiceListAdapter extends ArrayAdapter<File> {
         tv1.setText(FileUtils.getPrettyPrintedDate(currentItem));
 
         if (currentItem.exists()) {
-            Button b = (Button) convertView.findViewById(R.id.upload_button);
+            ImageButton b = (ImageButton) convertView.findViewById(R.id.upload_button);
             // so that we can access the item inside the handler
             b.setTag(currentItem.getPath());
             b.setOnClickListener(uploadButtonHandler);
