@@ -19,8 +19,6 @@ import com.readystatesoftware.simpl3r.Uploader.UploadProgressListener;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class InvoiceUploadService extends IntentService {
     public static final String ARG_FILE_PATH = "file_path";
@@ -174,24 +172,5 @@ public class InvoiceUploadService extends IntentService {
     private void uploadInvoice(String s3Location) throws IOException {
         KuluBackend backend = new KuluBackend();
         backend.createInvoice(getString(R.string.kulu_backend_service_url), s3Location);
-    }
-
-    private String md5(String s) {
-        try {
-            // create MD5 Hash
-            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-            digest.update(s.getBytes());
-            byte messageDigest[] = digest.digest();
-
-            // create Hex String
-            StringBuilder hexString = new StringBuilder();
-            for (byte aMessageDigest : messageDigest)
-                hexString.append(Integer.toHexString(0xFF & aMessageDigest));
-            return hexString.toString();
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }

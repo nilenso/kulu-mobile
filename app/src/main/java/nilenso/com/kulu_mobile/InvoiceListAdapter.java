@@ -13,8 +13,6 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class InvoiceListAdapter extends ArrayAdapter<File> {
-    private String LOG_TAG = "InvoiceListAdapter";
-
     public InvoiceListAdapter(Context ctx, int viewResourceId, ArrayList<File> fs) {
         super(ctx, viewResourceId, fs);
     }
