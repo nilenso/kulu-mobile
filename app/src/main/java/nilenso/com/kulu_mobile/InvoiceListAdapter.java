@@ -12,8 +12,10 @@ import android.widget.TextView;
 import java.io.File;
 import java.util.ArrayList;
 
-public class InvoiceListAdapter extends ArrayAdapter<File> {
-    public InvoiceListAdapter(Context ctx, int viewResourceId, ArrayList<File> fs) {
+import io.realm.RealmResults;
+
+public class InvoiceListAdapter extends ArrayAdapter<ExpenseEntry> {
+    public InvoiceListAdapter(Context ctx, int viewResourceId, RealmResults<ExpenseEntry> fs) {
         super(ctx, viewResourceId, fs);
     }
 
@@ -24,18 +26,18 @@ public class InvoiceListAdapter extends ArrayAdapter<File> {
                     .inflate(R.layout.invoices_list_item, parent, false);
         }
 
-        File currentItem = getItem(position);
+        ExpenseEntry currentItem = getItem(position);
 
         TextView tv = (TextView) convertView.findViewById(R.id.invoice_file_name);
-        tv.setText(FileUtils.getBaseNameForFile(currentItem));
+        tv.setText(currentItem.getComments());
 
         TextView tv1 = (TextView) convertView.findViewById(R.id.invoice_file_timestamp);
-        tv1.setText(FileUtils.getPrettyPrintedDate(currentItem));
+        tv1.setText(currentItem.getCreatedAt().toString());
 
-        if (currentItem.exists()) {
+        if (currentItem.getInvoice() != null ) {
             ImageButton b = (ImageButton) convertView.findViewById(R.id.upload_button);
             // so that we can access the item inside the handler
-            b.setTag(currentItem.getPath());
+            b.setTag(currentItem.getInvoice());
             b.setOnClickListener(uploadButtonHandler);
         }
 

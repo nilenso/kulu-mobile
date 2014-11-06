@@ -1,0 +1,81 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="nilenso.com.kulu_mobile.RecordExpense"
+    >
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:id="@+id/save"
+        android:enabled="true"
+        android:clickable="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="saveExpense"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:id="@+id/editComments"
+        android:hint="@string/expense_comment"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/capture_invoice"
+        android:id="@+id/invoice"
+        android:layout_toStartOf="@+id/save"
+        android:onClick="dispatchTakePictureIntent"
+        android:layout_below="@+id/editComments"
+        android:layout_alignRight="@+id/save"
+        android:layout_alignEnd="@+id/save" />
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id = '@+id/expense_type'>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/company"
+            android:id="@+id/company"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/save"
+            android:layout_toStartOf="@+id/save"
+            android:layout_marginTop="34dp" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/personal"
+            android:id="@+id/personal"
+            android:layout_below="@+id/radioButton"
+            android:layout_toLeftOf="@+id/invoice"
+            android:layout_toStartOf="@+id/invoice" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reimbursement"
+            android:id="@+id/reimbursement"
+            android:layout_below="@+id/radioButton2"
+            android:layout_alignRight="@+id/radioButton2"
+            android:layout_alignEnd="@+id/radioButton2" />
+    </RadioGroup>
+
+
+
+</RelativeLayout>

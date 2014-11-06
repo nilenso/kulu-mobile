@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="nilenso.com.kulu_mobile" >
 
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -12,18 +15,28 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Light"
-            android:label="@string/app_name" >
+            android:name="nilenso.com.kulu_mobile.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.Light" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <service
-            android:name=".InvoiceUploadService"
-            android:exported="false"/>
+            android:name="nilenso.com.kulu_mobile.InvoiceUploadService"
+            android:exported="false" />
+
+        <activity
+            android:name="nilenso.com.kulu_mobile.RecordExpense"
+            android:label="@string/title_activity_record_expense"
+            android:parentActivityName="nilenso.com.kulu_mobile.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="nilenso.com.kulu_mobile.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
