@@ -1,20 +1,17 @@
 package nilenso.com.kulu_mobile;
 
-import android.provider.BaseColumns;
-
 import java.util.Date;
 
 import io.realm.RealmObject;
-
-/**
- * Created by who on 04/11/14.
- */
+import io.realm.annotations.Index;
 
 public class ExpenseEntry extends RealmObject {
      private String comments;
-     private String invoice;
      private String expenseType;
      private Date createdAt;
+
+    @Index
+    private String invoice;
 
 
     public String getComments() {
