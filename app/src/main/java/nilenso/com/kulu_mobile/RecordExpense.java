@@ -1,27 +1,13 @@
 package nilenso.com.kulu_mobile;
 
-import android.app.Activity;
-import android.content.ContentValues;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.ContactsContract;
-import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.realm.Realm;
@@ -87,41 +73,4 @@ public class RecordExpense extends FragmentActivity {
         realm.commitTransaction();
         finish();
     }
-
-    public void dispatchTakePictureIntent(View view) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
-
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                Log.e(LOG_TAG, "Problem in saving the file" + ex.getMessage());
-            }
-
-            // continue only if the File was successfully created
-            if (photoFile != null) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                invoiceLocation = String.valueOf(Uri.fromFile(photoFile));
-                startActivityForResult(takePictureIntent, 1);
-
-                // add the new file to the top of the main list of files
-            }
-        }
-    }
-
-    private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile;
-
-        Log.i(LOG_TAG, "Creating image file...");
-        mediaFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) +
-                File.separator +
-                "IMG_" + timeStamp + ".jpg");
-
-        return mediaFile;
-    }
-
-
 }
