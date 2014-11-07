@@ -29,6 +29,7 @@ import io.realm.Realm;
 
 public class RecordExpense extends FragmentActivity {
     private String LOG_TAG = "RecordExpenseActivity";
+    private String invoiceLocation = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,7 @@ public class RecordExpense extends FragmentActivity {
         ExpenseEntry expenseEntry = realm.createObject(ExpenseEntry.class);
         expenseEntry.setComments(comments.getText().toString());
         expenseEntry.setExpenseType(checkedExpenseType);
-        expenseEntry.setInvoice(MediaStore.EXTRA_OUTPUT);
+        expenseEntry.setInvoice(invoiceLocation);
         expenseEntry.setCreatedAt(new Date());
         realm.commitTransaction();
         finish();
@@ -102,6 +103,7 @@ public class RecordExpense extends FragmentActivity {
             // continue only if the File was successfully created
             if (photoFile != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                invoiceLocation = String.valueOf(Uri.fromFile(photoFile));
                 startActivityForResult(takePictureIntent, 1);
 
                 // add the new file to the top of the main list of files

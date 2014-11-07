@@ -90,6 +90,13 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
             if(itemToRemove != null) {
+                Realm realm = Realm.getInstance(context);
+                realm.beginTransaction();
+                RealmResults<ExpenseEntry> result = realm.where(ExpenseEntry.class)
+                                        .equalTo("invoice", fileToRemove.toString())
+                                        .findAll();
+                result.clear();
+                realm.commitTransaction();
                 filesList.remove(itemToRemove);
             }
 
