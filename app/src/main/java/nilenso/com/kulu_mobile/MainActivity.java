@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -60,9 +61,9 @@ public class MainActivity extends ActionBarActivity {
         super.onDestroy();
     }
 
-    private void addExpense(String invoiceLocation) {
+    private void addExpense(Uri invoiceLocation) {
         Intent recordExpense = new Intent(this, RecordExpense.class);
-        recordExpense.putExtra(INVOICE_LOCATION, invoiceLocation);
+        recordExpense.putExtra(INVOICE_LOCATION, invoiceLocation.toString());
 
         startActivity(recordExpense);
     }
@@ -89,11 +90,13 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
+    private Uri mCurrentPhotoPath = null;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                addExpense("");
+                addExpense(mCurrentPhotoPath);
 
                 Toast.makeText(getApplicationContext(),
                         "New image added.", Toast.LENGTH_SHORT).show();
@@ -122,7 +125,8 @@ public class MainActivity extends ActionBarActivity {
 
             // continue only if the File was successfully created
             if (photoFile != null) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, "foobar");
+                mCurrentPhotoPath = Uri.fromFile(photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCurrentPhotoPath);
                 startActivityForResult(takePictureIntent, 1);
             }
         }
