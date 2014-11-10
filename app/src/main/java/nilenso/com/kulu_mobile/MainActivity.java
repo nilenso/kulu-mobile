@@ -61,9 +61,10 @@ public class MainActivity extends ActionBarActivity {
         super.onDestroy();
     }
 
-    private void addExpense(Uri invoiceLocation) {
+    private void addExpense(String invoiceName) {
         Intent recordExpense = new Intent(this, RecordExpense.class);
-        recordExpense.putExtra(INVOICE_LOCATION, invoiceLocation.toString());
+        Log.i("IMPORTANT", "File name " + invoiceName);
+        recordExpense.putExtra(INVOICE_LOCATION, invoiceName);
 
         startActivity(recordExpense);
     }
@@ -80,8 +81,9 @@ public class MainActivity extends ActionBarActivity {
 
             Realm realm = Realm.getInstance(context);
             realm.beginTransaction();
+            Log.i(LOG_TAG, "file NAME " + fileToRemove.getName());
             ExpenseEntry result = realm.where(ExpenseEntry.class)
-                    .equalTo("invoice", fileToRemove.toString())
+                    .equalTo("invoice", fileToRemove.getName())
                     .findFirst();
             result.removeFromRealm();
             realm.commitTransaction();
@@ -96,7 +98,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                addExpense(mCurrentPhotoPath);
+                addExpense(getFileNameFromUri(mCurrentPhotoPath));
 
                 Toast.makeText(getApplicationContext(),
                         "New image added.", Toast.LENGTH_SHORT).show();
@@ -109,6 +111,10 @@ public class MainActivity extends ActionBarActivity {
                         "Failed to capture image.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private String getFileNameFromUri(Uri mCurrentPhotoPath) {
+        return new File(mCurrentPhotoPath.toString()).getName();
     }
 
     public void dispatchTakePictureIntent() {
