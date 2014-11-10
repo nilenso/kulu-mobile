@@ -21,27 +21,52 @@ public class InvoiceListAdapter extends ArrayAdapter<ExpenseEntry> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext())
-                    .inflate(R.layout.invoices_list_item, parent, false);
-        }
-
+        convertView = getConvertView(convertView, parent);
         ExpenseEntry currentItem = getItem(position);
 
-        TextView tv = (TextView) convertView.findViewById(R.id.invoice_file_name);
-        tv.setText(currentItem.getComments());
+        setRemarks(convertView, currentItem);
+        setCreatedAtTime(convertView, currentItem);
 
-        TextView tv1 = (TextView) convertView.findViewById(R.id.invoice_file_timestamp);
-        tv1.setText(currentItem.getCreatedAt().toString());
-
-        if (currentItem.getInvoice() != null ) {
-            ImageButton b = (ImageButton) convertView.findViewById(R.id.upload_button);
-            // so that we can access the item inside the handler
-            b.setTag(currentItem.getInvoice());
-            b.setOnClickListener(uploadButtonHandler);
-        }
+        if (invoiceExists(currentItem))
+            setUploadListener(convertView, currentItem);
 
         return convertView;
+    }
+
+    private View getConvertView(View convertView, ViewGroup parent) {
+        if (!convertViewExists(convertView))
+            convertView = inflateConvertView(parent);
+        return convertView;
+    }
+
+    private View inflateConvertView(ViewGroup parent) {
+        return LayoutInflater.from(getContext())
+                .inflate(R.layout.invoices_list_item, parent, false);
+    }
+
+    private boolean convertViewExists(View convertView) {
+        return convertView != null;
+    }
+
+    private void setUploadListener(View convertView, ExpenseEntry currentItem) {
+        ImageButton b = (ImageButton) convertView.findViewById(R.id.upload_button);
+        // so that we can access the item inside the handler
+        b.setTag(currentItem.getInvoice());
+        b.setOnClickListener(uploadButtonHandler);
+    }
+
+    private boolean invoiceExists(ExpenseEntry currentItem) {
+        return currentItem.getInvoice() != null;
+    }
+
+    private void setCreatedAtTime(View convertView, ExpenseEntry currentItem) {
+        TextView tv1 = (TextView) convertView.findViewById(R.id.invoice_file_timestamp);
+        tv1.setText(currentItem.getCreatedAt().toString());
+    }
+
+    private void setRemarks(View convertView, ExpenseEntry currentItem) {
+        TextView tv = (TextView) convertView.findViewById(R.id.invoice_file_name);
+        tv.setText(currentItem.getComments());
     }
 
     View.OnClickListener uploadButtonHandler = new View.OnClickListener() {

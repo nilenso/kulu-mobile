@@ -49,22 +49,12 @@ public class RecordExpense extends FragmentActivity {
 
     public void saveExpense(View view) {
         EditText comments = (EditText) findViewById(R.id.editComments);
+        String checkedExpenseType = getCheckedRadioButtonValue();
+        createExpenseEntry(comments, checkedExpenseType);
+        finish();
+    }
 
-        RadioGroup expenseType = (RadioGroup) findViewById(R.id.expense_type);
-        String checkedExpenseType = null;
-
-        switch(expenseType.getCheckedRadioButtonId()) {
-            case R.id.company:
-                checkedExpenseType = "Company";
-                break;
-            case R.id.personal:
-                checkedExpenseType = "Personal";
-                break;
-            case R.id.reimbursement:
-                checkedExpenseType = "Reimbursement";
-                break;
-        }
-
+    private void createExpenseEntry(EditText comments, String checkedExpenseType) {
         Realm realm = Realm.getInstance(this);
         realm.beginTransaction();
         ExpenseEntry expenseEntry = realm.createObject(ExpenseEntry.class);
@@ -73,6 +63,18 @@ public class RecordExpense extends FragmentActivity {
         expenseEntry.setInvoice(invoiceLocation);
         expenseEntry.setCreatedAt(new Date());
         realm.commitTransaction();
-        finish();
+    }
+
+    private String getCheckedRadioButtonValue() {
+        RadioGroup expenseType = (RadioGroup) findViewById(R.id.expense_type);
+        switch(expenseType.getCheckedRadioButtonId()) {
+            case R.id.company:
+                return "Company";
+            case R.id.personal:
+                return "Personal";
+            case R.id.reimbursement:
+                return "Reimbursement";
+        }
+        return null;
     }
 }
