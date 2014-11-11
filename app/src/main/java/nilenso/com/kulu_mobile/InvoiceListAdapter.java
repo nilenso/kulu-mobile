@@ -51,7 +51,7 @@ public class InvoiceListAdapter extends ArrayAdapter<ExpenseEntry> {
     private void setUploadListener(View convertView, ExpenseEntry currentItem) {
         ImageButton b = (ImageButton) convertView.findViewById(R.id.upload_button);
         // so that we can access the item inside the handler
-        b.setTag(currentItem.getInvoice());
+        b.setTag(currentItem.getInvoicePath());
         b.setOnClickListener(uploadButtonHandler);
     }
 

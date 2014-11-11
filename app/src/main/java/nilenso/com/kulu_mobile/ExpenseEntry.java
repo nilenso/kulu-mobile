@@ -6,9 +6,11 @@ import io.realm.RealmObject;
 import io.realm.annotations.Index;
 
 public class ExpenseEntry extends RealmObject {
-     private String comments;
-     private String expenseType;
-     private Date createdAt;
+    private String comments;
+    private String expenseType;
+    private Date createdAt;
+    private String invoicePath;
+
 
     @Index
     private String invoice;
@@ -45,4 +47,13 @@ public class ExpenseEntry extends RealmObject {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
+    public String getInvoicePath() {
+        return invoicePath;
+    }
+
+    public void setInvoicePath(String invoicePath) {
+        this.invoicePath = invoicePath;
+    }
+
 }

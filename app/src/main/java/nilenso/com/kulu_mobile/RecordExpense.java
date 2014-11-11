@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
+import java.io.File;
 import java.util.Date;
 
 import io.realm.Realm;
@@ -60,9 +61,14 @@ public class RecordExpense extends FragmentActivity {
         ExpenseEntry expenseEntry = realm.createObject(ExpenseEntry.class);
         expenseEntry.setComments(comments.getText().toString());
         expenseEntry.setExpenseType(checkedExpenseType);
-        expenseEntry.setInvoice(invoiceLocation);
+        expenseEntry.setInvoice(getFileNameFromUri(invoiceLocation));
+        expenseEntry.setInvoicePath(invoiceLocation);
         expenseEntry.setCreatedAt(new Date());
         realm.commitTransaction();
+    }
+
+    private String getFileNameFromUri(String invoiceLocation) {
+        return new File(invoiceLocation).getName();
     }
 
     private String getCheckedRadioButtonValue() {

@@ -61,10 +61,9 @@ public class MainActivity extends ActionBarActivity {
         super.onDestroy();
     }
 
-    private void addExpense(String invoiceName) {
+    private void addExpense(Uri invoiceName) {
         Intent recordExpense = new Intent(this, RecordExpense.class);
-        Log.i("IMPORTANT", "File name " + invoiceName);
-        recordExpense.putExtra(INVOICE_LOCATION, invoiceName);
+        recordExpense.putExtra(INVOICE_LOCATION, invoiceName.toString());
 
         startActivity(recordExpense);
     }
@@ -76,12 +75,11 @@ public class MainActivity extends ActionBarActivity {
             File fileToRemove = new File(extra.getString(InvoiceUploadService.FILEUPLOADED_EXTRA));
 
             if (!fileToRemove.delete()) {
-                Log.e(LOG_TAG, "Couldn't remove the file" + fileToRemove.toString());
+                Log.e(LOG_TAG, "Couldn't remove the file " + fileToRemove.toString());
             }
 
             Realm realm = Realm.getInstance(context);
             realm.beginTransaction();
-            Log.i(LOG_TAG, "file NAME " + fileToRemove.getName());
             ExpenseEntry result = realm.where(ExpenseEntry.class)
                     .equalTo("invoice", fileToRemove.getName())
                     .findFirst();
@@ -98,7 +96,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                addExpense(getFileNameFromUri(mCurrentPhotoPath));
+                addExpense(mCurrentPhotoPath);
 
                 Toast.makeText(getApplicationContext(),
                         "New image added.", Toast.LENGTH_SHORT).show();
@@ -111,10 +109,6 @@ public class MainActivity extends ActionBarActivity {
                         "Failed to capture image.", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    private String getFileNameFromUri(Uri mCurrentPhotoPath) {
-        return new File(mCurrentPhotoPath.toString()).getName();
     }
 
     public void dispatchTakePictureIntent() {
