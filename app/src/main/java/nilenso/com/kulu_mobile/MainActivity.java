@@ -63,7 +63,7 @@ public class MainActivity extends ActionBarActivity {
 
     private void addExpense(Uri invoiceName) {
         Intent recordExpense = new Intent(this, RecordExpense.class);
-        recordExpense.putExtra(INVOICE_LOCATION, invoiceName.toString());
+        recordExpense.putExtra(INVOICE_LOCATION, invoiceName.getPath());
 
         startActivity(recordExpense);
     }
