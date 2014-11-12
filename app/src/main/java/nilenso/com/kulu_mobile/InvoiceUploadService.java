@@ -20,6 +20,8 @@ import com.readystatesoftware.simpl3r.Uploader.UploadProgressListener;
 import java.io.File;
 import java.io.IOException;
 
+import io.realm.Realm;
+
 public class InvoiceUploadService extends IntentService {
     public static final String ARG_FILE_PATH = "file_path";
 
@@ -100,7 +102,7 @@ public class InvoiceUploadService extends IntentService {
         }
 
         try {
-            uploadInvoice(s3Location);
+            uploadInvoice(s3Location, fileToUpload.getName());
             broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
             nm.notify(NOTIFY_ID_UPLOAD, buildNotification("Upload finished", 100));
             broadcastFinished(s3Location, fileToUpload.toString());
@@ -169,8 +171,14 @@ public class InvoiceUploadService extends IntentService {
         return builder.build();
     }
 
-    private void uploadInvoice(String s3Location) throws IOException {
+    private void uploadInvoice(String s3Location, String fileName) throws IOException {
         KuluBackend backend = new KuluBackend();
-        backend.createInvoice(getString(R.string.kulu_backend_service_url), s3Location);
+
+        Realm realm = Realm.getInstance(this);
+        ExpenseEntry result = realm.where(ExpenseEntry.class)
+                .equalTo("invoice", fileName)
+                .findFirst();
+
+        backend.createInvoice(getString(R.string.kulu_backend_service_url), s3Location, result);
     }
 }

@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.realm.Realm;
+
 public class KuluBackend {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private OkHttpClient client;
@@ -20,11 +22,16 @@ public class KuluBackend {
         client = new OkHttpClient();
     }
 
-    public String createInvoice(String url, String s3Location) throws IOException {
+    public String createInvoice(String url, String s3Location, ExpenseEntry expense) throws IOException {
         String requestKey = "storage_key";
+        String remarksKey = "remarks";
+        String expenseTypeKey = "expense_type";
+
         Map<String, String> requestMap = new HashMap<String, String>();
 
         requestMap.put(requestKey, FileUtils.getLastPartOfFile(s3Location));
+        requestMap.put(remarksKey, expense.getComments());
+        requestMap.put(expenseTypeKey, expense.getExpenseType());
 
         JSONObject json = new JSONObject(requestMap);
 
