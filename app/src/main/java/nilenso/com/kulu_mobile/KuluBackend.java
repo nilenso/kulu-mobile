@@ -26,12 +26,14 @@ public class KuluBackend {
         String requestKey = "storage_key";
         String remarksKey = "remarks";
         String expenseTypeKey = "expense_type";
+        String dateKey = "date";
 
         Map<String, String> requestMap = new HashMap<String, String>();
 
         requestMap.put(requestKey, FileUtils.getLastPartOfFile(s3Location));
         requestMap.put(remarksKey, expense.getComments());
         requestMap.put(expenseTypeKey, expense.getExpenseType());
+        requestMap.put(dateKey , expense.getCreatedAt().toString());
 
         JSONObject json = new JSONObject(requestMap);
 

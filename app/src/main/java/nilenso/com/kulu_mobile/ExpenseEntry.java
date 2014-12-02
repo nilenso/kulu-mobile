@@ -10,9 +10,6 @@ public class ExpenseEntry extends RealmObject {
     private String expenseType;
     private Date createdAt;
     private String invoicePath;
-
-
-    @Index
     private String invoice;
 
 

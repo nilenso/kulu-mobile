@@ -78,14 +78,6 @@ public class MainActivity extends ActionBarActivity {
                 Log.e(LOG_TAG, "Couldn't remove the file " + fileToRemove.toString());
             }
 
-            Realm realm = Realm.getInstance(context);
-            realm.beginTransaction();
-            ExpenseEntry result = realm.where(ExpenseEntry.class)
-                    .equalTo("invoice", fileToRemove.getName())
-                    .findFirst();
-            result.removeFromRealm();
-            realm.commitTransaction();
-
             invoiceListAdapter.notifyDataSetChanged();
         }
     };

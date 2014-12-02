@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class InvoiceUploadService extends IntentService {
     public static final String ARG_FILE_PATH = "file_path";
@@ -102,14 +103,26 @@ public class InvoiceUploadService extends IntentService {
         }
 
         try {
-            uploadInvoice(s3Location, fileToUpload.getName());
+            String fileName = fileToUpload.getName();
+            uploadInvoice(s3Location, fileName);
             broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
             nm.notify(NOTIFY_ID_UPLOAD, buildNotification("Upload finished", 100));
+            removeUploadedExpense(fileName);
             broadcastFinished(s3Location, fileToUpload.toString());
         } catch (IOException e) {
             broadcastState(s3ObjectKey, -1, "Upload couldn't be finished as connection to Kulu Backend failed");
             nm.notify(NOTIFY_ID_UPLOAD + 1, buildNotification("Upload couldn't be finished as the connection to the backend failed.", -1));
         }
+    }
+
+    private void removeUploadedExpense(String fileName) {
+        Realm realm = Realm.getInstance(this);
+        realm.beginTransaction();
+        RealmResults<ExpenseEntry> results = realm.where(ExpenseEntry.class)
+                .equalTo("invoice", fileName)
+                .findAll();
+        results.remove(0);
+        realm.commitTransaction();
     }
 
     @Override
