@@ -80,7 +80,8 @@ public class RecordExpense extends FragmentActivity {
                 return "Personal";
             case R.id.reimbursement:
                 return "Reimbursement";
+            default:
+                return "";
         }
-        return null;
     }
 }
