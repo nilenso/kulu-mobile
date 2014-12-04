@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -61,9 +63,9 @@ public class MainActivity extends ActionBarActivity {
         super.onDestroy();
     }
 
-    private void addExpense(Uri invoiceName) {
+    private void addExpense(Uri invoiceURI) {
         Intent recordExpense = new Intent(this, RecordExpense.class);
-        recordExpense.putExtra(INVOICE_LOCATION, invoiceName.getPath());
+        recordExpense.putExtra(INVOICE_LOCATION, invoiceURI.getPath());
 
         startActivity(recordExpense);
     }
@@ -78,6 +80,12 @@ public class MainActivity extends ActionBarActivity {
                 Log.e(LOG_TAG, "Couldn't remove the file " + fileToRemove.toString());
             }
 
+            ImageButton uploadButton = (ImageButton) findViewById(R.id.upload_button);
+            uploadButton.setEnabled(true);
+
+            Toast.makeText(context,
+                    "Upload finished for " + fileToRemove.getName(), Toast.LENGTH_SHORT).show();
+
             invoiceListAdapter.notifyDataSetChanged();
         }
     };
@@ -87,7 +95,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK && mCurrentPhotoPath != null) {
                 addExpense(mCurrentPhotoPath);
 
                 Toast.makeText(getApplicationContext(),
@@ -117,8 +125,7 @@ public class MainActivity extends ActionBarActivity {
 
             // continue only if the File was successfully created
             if (photoFile != null) {
-                mCurrentPhotoPath = Uri.fromFile(photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCurrentPhotoPath);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
                 startActivityForResult(takePictureIntent, 1);
             }
         }
@@ -126,13 +133,19 @@ public class MainActivity extends ActionBarActivity {
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile;
+        String imageFileName = "IMG_" + timeStamp;
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
 
         Log.i(LOG_TAG, "Creating image file...");
-        mediaFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) +
-                File.separator +
-                "IMG_" + timeStamp + ".jpg");
+        File mediaFile = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
 
+        mCurrentPhotoPath = Uri.fromFile(mediaFile);
+        Log.e(LOG_TAG, "FILE path " + mCurrentPhotoPath);
         return mediaFile;
     }
 

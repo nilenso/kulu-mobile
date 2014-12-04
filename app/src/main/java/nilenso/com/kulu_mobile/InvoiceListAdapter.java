@@ -6,8 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -74,6 +76,12 @@ public class InvoiceListAdapter extends ArrayAdapter<ExpenseEntry> {
             String filePath = (String) v.getTag();
             Intent intent = new Intent(getContext(), InvoiceUploadService.class);
             intent.putExtra(InvoiceUploadService.ARG_FILE_PATH, filePath);
+
+            ImageButton button = (ImageButton) v.findViewById(R.id.upload_button);
+            button.setEnabled(false);
+
+            Toast.makeText(getContext(),
+                    "Upload started...", Toast.LENGTH_SHORT).show();
             getContext().startService(intent);
         }
     };

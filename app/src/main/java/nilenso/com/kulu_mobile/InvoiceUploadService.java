@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.widget.ImageButton;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -29,6 +30,7 @@ public class InvoiceUploadService extends IntentService {
     public static final String UPLOAD_STATE_CHANGED_ACTION = "com.kulu_mobile.UPLOAD_STATE_CHANGED_ACTION";
     public static final String UPLOAD_CANCELLED_ACTION = "com.kulu_mobile.UPLOAD_CANCELLED_ACTION";
     public static final String UPLOAD_FINISHED_ACTION = "com.kulu_mobile.UPLOAD_FINISHED_ACTION";
+    public static final String UPLOAD_BUTTON = "com.kulu_mboile.UPLOAD_BUTTON";
 
     public static final String S3KEY_EXTRA = "com.kulu_mobile.s3key";
     public static final String S3LOCATION_EXTRA = "com.kulu_mobile.s3location";
@@ -138,7 +140,6 @@ public class InvoiceUploadService extends IntentService {
         b.putString(S3KEY_EXTRA, s3key);
         b.putInt(PERCENT_EXTRA, percent);
         b.putString(MSG_EXTRA, msg);
-
         broadcast(UPLOAD_STATE_CHANGED_ACTION, b);
     }
 
