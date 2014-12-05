@@ -33,7 +33,7 @@ public class MainActivity extends ActionBarActivity {
     private String LOG_TAG = "MainActivity";
     public static final String INVOICE_LOCATION = "invoiceLocationFromCamera";
     public static final String CURRENT_PHOTO_PATH = "currentPhotoPath";
-    public static final String DEFAUL_PHOTO_PATH = "";
+    public static final String DEFAULT_PHOTO_PATH = "";
 
     private void updateView() {
         setContentView(R.layout.activity_main);
@@ -172,7 +172,7 @@ public class MainActivity extends ActionBarActivity {
 
     private Uri getCurrentPhotoPath() {
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        String currentPhotoPath = sharedPref.getString(CURRENT_PHOTO_PATH, DEFAUL_PHOTO_PATH);
+        String currentPhotoPath = sharedPref.getString(CURRENT_PHOTO_PATH, DEFAULT_PHOTO_PATH);
         return Uri.parse(currentPhotoPath);
     }
 
