@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,6 +32,8 @@ public class MainActivity extends ActionBarActivity {
     private InvoiceListAdapter invoiceListAdapter;
     private String LOG_TAG = "MainActivity";
     public static final String INVOICE_LOCATION = "invoiceLocationFromCamera";
+    public static final String CURRENT_PHOTO_PATH = "currentPhotoPath";
+    public static final String DEFAUL_PHOTO_PATH = "";
 
     private void updateView() {
         setContentView(R.layout.activity_main);
@@ -95,7 +98,8 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
-            if (resultCode == RESULT_OK && mCurrentPhotoPath != null) {
+            setCurrentPhotoPath();
+            if (resultCode == RESULT_OK) {
                 addExpense(mCurrentPhotoPath);
 
                 Toast.makeText(getApplicationContext(),
@@ -109,6 +113,15 @@ public class MainActivity extends ActionBarActivity {
                         "Failed to capture image.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void setCurrentPhotoPath() {
+        if (currentPhotoPathExists()) return;
+        mCurrentPhotoPath = getCurrentPhotoPath();
+    }
+
+    private boolean currentPhotoPathExists() {
+        return mCurrentPhotoPath != null;
     }
 
     public void dispatchTakePictureIntent() {
@@ -145,8 +158,22 @@ public class MainActivity extends ActionBarActivity {
         );
 
         mCurrentPhotoPath = Uri.fromFile(mediaFile);
+        saveCurrentPhotoPath();
         Log.e(LOG_TAG, "FILE path " + mCurrentPhotoPath);
         return mediaFile;
+    }
+
+    private void saveCurrentPhotoPath() {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(CURRENT_PHOTO_PATH, mCurrentPhotoPath.getPath());
+        editor.commit();
+    }
+
+    private Uri getCurrentPhotoPath() {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        String currentPhotoPath = sharedPref.getString(CURRENT_PHOTO_PATH, DEFAUL_PHOTO_PATH);
+        return Uri.parse(currentPhotoPath);
     }
 
     @Override
