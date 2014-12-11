@@ -10,6 +10,9 @@ public class ExpenseEntry extends RealmObject {
     private String expenseType;
     private Date createdAt;
     private String invoicePath;
+    private boolean deleted;
+
+    @Index
     private String invoice;
 
 
@@ -53,4 +56,11 @@ public class ExpenseEntry extends RealmObject {
         this.invoicePath = invoicePath;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

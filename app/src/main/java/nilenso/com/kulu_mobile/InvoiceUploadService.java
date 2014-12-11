@@ -120,10 +120,10 @@ public class InvoiceUploadService extends IntentService {
     private void removeUploadedExpense(String fileName) {
         Realm realm = Realm.getInstance(this);
         realm.beginTransaction();
-        RealmResults<ExpenseEntry> results = realm.where(ExpenseEntry.class)
+        ExpenseEntry expense = realm.where(ExpenseEntry.class)
                 .equalTo("invoice", fileName)
-                .findAll();
-        results.remove(0);
+                .findFirst();
+        expense.setDeleted(true);
         realm.commitTransaction();
     }
 

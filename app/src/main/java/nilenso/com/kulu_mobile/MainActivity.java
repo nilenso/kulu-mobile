@@ -20,12 +20,15 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.exceptions.RealmMigrationNeededException;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -38,9 +41,16 @@ public class MainActivity extends ActionBarActivity {
     private void updateView() {
         setContentView(R.layout.activity_main);
         ListView invoiceList = (ListView) findViewById(R.id.listView);
-        Realm realm = Realm.getInstance(this);
+        RealmResults<ExpenseEntry> expenses = null;
 
-        RealmResults<ExpenseEntry> expenses = realm.where(ExpenseEntry.class).findAll().sort("createdAt", RealmResults.SORT_ORDER_DECENDING);
+        try {
+            Realm realm = Realm.getInstance(this);
+            expenses = realm.where(ExpenseEntry.class).equalTo("deleted", false).findAll().sort("createdAt", RealmResults.SORT_ORDER_DECENDING);
+        } catch (RealmMigrationNeededException ex) {
+            Realm.deleteRealmFile(this);
+            Realm realm = Realm.getInstance(this);
+            expenses = realm.where(ExpenseEntry.class).equalTo("deleted", false).findAll().sort("createdAt", RealmResults.SORT_ORDER_DECENDING);
+        }
         invoiceListAdapter = new InvoiceListAdapter(this, R.layout.invoices_list_item, expenses);
         invoiceList.setAdapter(invoiceListAdapter);
     }
@@ -77,17 +87,14 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extra = intent.getExtras();
-            File fileToRemove = new File(extra.getString(InvoiceUploadService.FILEUPLOADED_EXTRA));
+            File file = new File(extra.getString(InvoiceUploadService.FILEUPLOADED_EXTRA));
 
-            if (!fileToRemove.delete()) {
-                Log.e(LOG_TAG, "Couldn't remove the file " + fileToRemove.toString());
-            }
 
             ImageButton uploadButton = (ImageButton) findViewById(R.id.upload_button);
             uploadButton.setEnabled(true);
 
             Toast.makeText(context,
-                    "Upload finished for " + fileToRemove.getName(), Toast.LENGTH_SHORT).show();
+                    "Upload finished for " + file.getName(), Toast.LENGTH_SHORT).show();
 
             invoiceListAdapter.notifyDataSetChanged();
         }
