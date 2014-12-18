@@ -1,6 +1,9 @@
 package nilenso.com.kulu_mobile;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,21 +17,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmMigrationNeededException;
+import nilenso.com.kulu_mobile.accounts.GenericAccountService;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -38,18 +39,34 @@ public class MainActivity extends ActionBarActivity {
     public static final String CURRENT_PHOTO_PATH = "currentPhotoPath";
     public static final String DEFAULT_PHOTO_PATH = "";
 
+    public static final String AUTHORITY = "nilenso.com.kulu_mobile.sync.basicsyncadapter";
+    // An account type, in the form of a domain name
+    Account mAccount;
+    private final RealmChangeListener syncListener = new RealmChangeListener() {
+            @Override
+            public void onChange() {
+                ContentResolver.requestSync(
+                        GenericAccountService.GetAccount(),
+                        MainActivity.AUTHORITY,
+                        Bundle.EMPTY);
+            }
+        };
+
     private void updateView() {
         setContentView(R.layout.activity_main);
         ListView invoiceList = (ListView) findViewById(R.id.listView);
+        invoiceList.invalidate();
         RealmResults<ExpenseEntry> expenses = null;
+
 
         try {
             Realm realm = Realm.getInstance(this);
-            expenses = realm.where(ExpenseEntry.class).equalTo("deleted", false).findAll().sort("createdAt", RealmResults.SORT_ORDER_DECENDING);
+            expenses = realm.where(ExpenseEntry.class).equalTo("deleted", false).findAll("createdAt", RealmResults.SORT_ORDER_DESCENDING);
         } catch (RealmMigrationNeededException ex) {
             Realm.deleteRealmFile(this);
             Realm realm = Realm.getInstance(this);
-            expenses = realm.where(ExpenseEntry.class).equalTo("deleted", false).findAll().sort("createdAt", RealmResults.SORT_ORDER_DECENDING);
+            expenses = realm.where(ExpenseEntry.class).equalTo("deleted", false).findAll("createdAt", RealmResults.SORT_ORDER_DESCENDING);
+
         }
         invoiceListAdapter = new InvoiceListAdapter(this, R.layout.invoices_list_item, expenses);
         invoiceList.setAdapter(invoiceListAdapter);
@@ -59,9 +76,20 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateView();
-
-        IntentFilter f = new IntentFilter(InvoiceUploadService.UPLOAD_FINISHED_ACTION);
+        mAccount = CreateSyncAccount(this);
+        Realm.getInstance(this).addChangeListener(syncListener);
+        IntentFilter f = new IntentFilter(SyncAdapter.UPLOAD_FINISHED_ACTION);
         registerReceiver(uploadFinishedReceiver, f);
+    }
+
+    private Account CreateSyncAccount(Context context) {
+        Account newAccount = GenericAccountService.GetAccount();
+        AccountManager accountManager =
+                (AccountManager) context.getSystemService(
+                        ACCOUNT_SERVICE);
+        accountManager.addAccountExplicitly(newAccount, null, null);
+
+        return GenericAccountService.GetAccount();
     }
 
     @Override
@@ -71,8 +99,14 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
         unregisterReceiver(uploadFinishedReceiver);
+        Realm.getInstance(this).removeAllChangeListeners();
         super.onDestroy();
     }
 
@@ -85,13 +119,12 @@ public class MainActivity extends ActionBarActivity {
 
     public BroadcastReceiver uploadFinishedReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context, Intent intent) {
             Bundle extra = intent.getExtras();
-            File file = new File(extra.getString(InvoiceUploadService.FILEUPLOADED_EXTRA));
+            String fileName = extra.getString(SyncService.FILEUPLOADED_EXTRA);
+            File file = new File(fileName);
 
-
-            ImageButton uploadButton = (ImageButton) findViewById(R.id.upload_button);
-            uploadButton.setEnabled(true);
+            deleteUploadedExpense(file);
 
             Toast.makeText(context,
                     "Upload finished for " + file.getName(), Toast.LENGTH_SHORT).show();
@@ -99,6 +132,19 @@ public class MainActivity extends ActionBarActivity {
             invoiceListAdapter.notifyDataSetChanged();
         }
     };
+
+    private void deleteUploadedExpense(File file) {
+        Realm realm = Realm.getInstance(this);
+        realm.removeAllChangeListeners();
+        realm.beginTransaction();
+        ExpenseEntry expense = realm.where(ExpenseEntry.class)
+                .equalTo("invoice", file.getName())
+                .findFirst();
+        expense.setDeleted(true);
+        realm.commitTransaction();
+        realm.addChangeListener(syncListener);
+        realm.close();
+    }
 
     private Uri mCurrentPhotoPath = null;
 
@@ -201,4 +247,5 @@ public class MainActivity extends ActionBarActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }
