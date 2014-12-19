@@ -40,6 +40,13 @@ public class MainActivity extends ActionBarActivity {
     public static final String DEFAULT_PHOTO_PATH = "";
 
     public static final String AUTHORITY = "nilenso.com.kulu_mobile.sync.basicsyncadapter";
+
+    public static final long SECONDS_PER_MINUTE = 60L;
+    public static final long SYNC_INTERVAL_IN_MINUTES = 30L;
+    public static final long SYNC_INTERVAL =
+            SYNC_INTERVAL_IN_MINUTES *
+                    SECONDS_PER_MINUTE;
+
     // An account type, in the form of a domain name
     Account mAccount;
     private final RealmChangeListener syncListener = new RealmChangeListener() {
@@ -87,7 +94,11 @@ public class MainActivity extends ActionBarActivity {
         AccountManager accountManager =
                 (AccountManager) context.getSystemService(
                         ACCOUNT_SERVICE);
+
         accountManager.addAccountExplicitly(newAccount, null, null);
+
+        ContentResolver.setSyncAutomatically(newAccount, AUTHORITY, true);
+        ContentResolver.addPeriodicSync(newAccount, AUTHORITY, Bundle.EMPTY, SYNC_INTERVAL);
 
         return GenericAccountService.GetAccount();
     }
@@ -140,7 +151,7 @@ public class MainActivity extends ActionBarActivity {
         ExpenseEntry expense = realm.where(ExpenseEntry.class)
                 .equalTo("invoice", file.getName())
                 .findFirst();
-        expense.setDeleted(true);
+        if (expense != null) expense.setDeleted(true);
         realm.commitTransaction();
         realm.addChangeListener(syncListener);
         realm.close();
