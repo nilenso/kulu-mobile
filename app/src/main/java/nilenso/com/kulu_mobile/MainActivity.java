@@ -99,6 +99,7 @@ public class MainActivity extends ActionBarActivity {
 
         ContentResolver.setSyncAutomatically(newAccount, AUTHORITY, true);
         ContentResolver.addPeriodicSync(newAccount, AUTHORITY, Bundle.EMPTY, SYNC_INTERVAL);
+        ContentResolver.requestSync(newAccount, AUTHORITY, Bundle.EMPTY);
 
         return GenericAccountService.GetAccount();
     }
