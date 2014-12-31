@@ -17,8 +17,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.melnykov.fab.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +51,7 @@ public class MainActivity extends ActionBarActivity {
             SYNC_INTERVAL_IN_MINUTES *
                     SECONDS_PER_MINUTE;
 
+
     // An account type, in the form of a domain name
     Account mAccount;
     private final RealmChangeListener syncListener = new RealmChangeListener() {
@@ -62,6 +67,13 @@ public class MainActivity extends ActionBarActivity {
     private void updateView() {
         setContentView(R.layout.activity_main);
         ListView invoiceList = (ListView) findViewById(R.id.listView);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
+            }
+        });
         invoiceList.invalidate();
         RealmResults<ExpenseEntry> expenses = null;
 
@@ -77,6 +89,7 @@ public class MainActivity extends ActionBarActivity {
         }
         invoiceListAdapter = new InvoiceListAdapter(this, R.layout.invoices_list_item, expenses);
         invoiceList.setAdapter(invoiceListAdapter);
+        fab.attachToListView(invoiceList);
     }
 
     @Override
@@ -244,20 +257,16 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_activity_actions, menu);
-
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_scan:
-                dispatchTakePictureIntent();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        dispatchTakePictureIntent();
+        return true;
     }
+
+
+
 
 }
