@@ -14,12 +14,14 @@
     <string name="merchant_hint">Merchant Name</string>
     <string name="expense_date">Date</string>
     <string name="expense_amount">Amount</string>
-    <string name="expense_comment">Comments</string>
-    <string name="save">Save</string>
+    <string name="expense_comment">Enter remarks</string>
+    <string name="save">Submit</string>
     <string name="capture_invoice">Invoice</string>
 
     <string name="reimbursement">Reimbursement</string>
     <string name="company">Company</string>
-    <string name="personal">Personal</string>
+    <string name="personal">Self</string>
+    <string name="paidFor">Paid for</string>
+    <string name="paidBy">Paid by</string>
 
 </resources>

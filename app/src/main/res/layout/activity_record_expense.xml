@@ -8,7 +8,7 @@
     >
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/save"
         android:id="@+id/save"
@@ -19,54 +19,86 @@
         android:onClick="saveExpense"/>
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:imeOptions="actionDone"
         android:singleLine="true"
         android:id="@+id/editComments"
         android:hint="@string/expense_comment"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:inputType="text|textAutoComplete|textAutoCorrect" />
+        android:inputType="text|textAutoComplete|textAutoCorrect"
+        android:layout_below="@+id/expense_type"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id = '@+id/expense_type'>
+        android:orientation="horizontal"
+        android:id = '@+id/expense_type'
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="30dp">
 
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/company"
-            android:id="@+id/company"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/save"
-            android:layout_toStartOf="@+id/save"
-            android:layout_marginTop="34dp" />
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/company"
+        android:id="@+id/company"
+        android:checked="true"
+        android:layout_below="@+id/personal"
+        android:layout_centerHorizontal="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="60dp" />
 
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/personal"
-            android:id="@+id/personal"
-            android:layout_below="@+id/radioButton"
-            android:layout_toLeftOf="@+id/invoice"
-            android:layout_toStartOf="@+id/invoice" />
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/reimbursement"
-            android:id="@+id/reimbursement"
-            android:layout_below="@+id/radioButton2"
-            android:layout_alignRight="@+id/radioButton2"
-            android:layout_alignEnd="@+id/radioButton2" />
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/personal"
+        android:id="@+id/personal"
+        android:layout_below="@+id/expense_type"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/company"
+        android:layout_toStartOf="@+id/company"
+        android:layout_marginLeft="10dp" />
     </RadioGroup>
 
+    <Spinner
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentLeft="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/paidFor"
+        android:textSize="24sp"
+        android:id="@+id/textView"
+        android:layout_below="@+id/spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="38dp"
+        android:typeface="sans"
+        android:textStyle="normal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/paidBy"
+        android:textSize="24sp"
+        android:id="@+id/textView2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textStyle="normal"
+        android:typeface="normal"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_alignParentTop="true" />
 
 
 </RelativeLayout>

@@ -5,8 +5,12 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 
 import java.io.File;
 import java.util.Date;
@@ -22,8 +26,37 @@ public class RecordExpense extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_expense);
-
+        setupSpinner();
         invoiceLocation = getIntent().getStringExtra(MainActivity.INVOICE_LOCATION);
+    }
+
+    private void setupSpinner() {
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.planets_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                String item = (String) parent.getItemAtPosition(pos);
+
+                if (item.equals("Self")) {
+                    RadioButton button = (RadioButton) findViewById(R.id.personal);
+                    button.setEnabled(false);
+                    RadioGroup mOption = (RadioGroup) findViewById(R.id.expense_type);
+                    mOption.check(R.id.company);
+                } else {
+                    RadioButton button = (RadioButton) findViewById(R.id.personal);
+                    button.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
@@ -51,8 +84,21 @@ public class RecordExpense extends FragmentActivity {
     public void saveExpense(View view) {
         EditText comments = (EditText) findViewById(R.id.editComments);
         String checkedExpenseType = getCheckedRadioButtonValue();
-        createExpenseEntry(comments, checkedExpenseType);
+        String paidBy = getPaidByValue();
+        createExpenseEntry(comments, getExpenseType(checkedExpenseType, paidBy));
         finish();
+    }
+
+    private String getExpenseType(String checkedExpenseType, String paidBy) {
+        if (paidBy.equals("Self") && checkedExpenseType.equals("Company"))
+            return "Reimbursement";
+        return checkedExpenseType;
+    }
+
+
+    private String getPaidByValue() {
+        Spinner mySpinner=(Spinner) findViewById(R.id.spinner);
+        return mySpinner.getSelectedItem().toString();
     }
 
     private void createExpenseEntry(EditText comments, String checkedExpenseType) {
@@ -78,8 +124,6 @@ public class RecordExpense extends FragmentActivity {
                 return "Company";
             case R.id.personal:
                 return "Personal";
-            case R.id.reimbursement:
-                return "Reimbursement";
             default:
                 return "";
         }
