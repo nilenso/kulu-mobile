@@ -8,7 +8,7 @@
     <string name="kulu_s3_tmp_bucket">dev_kulu_invoices_tmp</string>
     <string name="kulu_s3_access_key_id">AKIAIQRWHSDWA6CFUGIA</string>
     <string name="kulu_s3_secret_access_key">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</string>
-    <string name="kulu_backend_service_url">http://192.168.1.182:3001/invoices</string>
+    <string name="kulu_backend_service_url">http://192.168.1.110:3001/invoices</string>
     <string name="title_activity_record_expense"></string>
     <string name="hello_world">Hello world!</string>
     <string name="merchant_hint">Merchant Name</string>

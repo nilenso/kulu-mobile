@@ -87,6 +87,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                     broadcastFinished(expense.getId());
                 } catch (IOException e) {
                     e.printStackTrace();
+                    broadcastState(-1, "Upload couldn't be finished as connection to Kulu Backend failed");
+                    nm.notify(NOTIFY_ID_UPLOAD + 1, buildNotification("Upload couldn't be finished as the connection to the backend failed.", -1));
                 }
                 continue;
             }
@@ -158,14 +160,12 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         Bundle b = new Bundle();
         b.putString(S3LOCATION_EXTRA, s3Location);
         b.putString(FILEUPLOADED_EXTRA, fileUploaded);
-
         broadcast(UPLOAD_FINISHED_ACTION, b);
     }
 
     private void broadcastFinished(String fileUploaded) {
         Bundle b = new Bundle();
         b.putString(FILEUPLOADED_EXTRA, fileUploaded);
-
         broadcast(UPLOAD_FINISHED_ACTION, b);
     }
 
