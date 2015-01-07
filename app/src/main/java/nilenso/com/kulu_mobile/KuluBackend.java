@@ -20,25 +20,39 @@ import io.realm.Realm;
 public class KuluBackend {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private OkHttpClient client;
+    private final String requestKey = "storage_key";
+    private final String remarksKey = "remarks";
+    private final String expenseTypeKey = "expense_type";
+    private final String dateKey = "date";
 
     public KuluBackend() {
         client = new OkHttpClient();
     }
 
     public String createInvoice(String url, String s3Location, ExpenseEntry expense) throws IOException {
-        String requestKey = "storage_key";
-        String remarksKey = "remarks";
-        String expenseTypeKey = "expense_type";
-        String dateKey = "date";
-        Date expenseDate = expense.getCreatedAt();
-
         Map<String, String> requestMap = new HashMap<String, String>();
-
         requestMap.put(requestKey, FileUtils.getLastPartOfFile(s3Location));
         requestMap.put(remarksKey, expense.getComments());
         requestMap.put(expenseTypeKey, expense.getExpenseType());
-        requestMap.put(dateKey , new DateTime(expenseDate).toString("yyyy-MM-dd"));
+        requestMap.put(dateKey , getDate(expense));
 
+        return makeRequest(url, requestMap);
+    }
+
+    public String createInvoice(String url, ExpenseEntry expense) throws IOException {
+        Map<String, String> requestMap = new HashMap<String, String>();
+        requestMap.put(remarksKey, expense.getComments());
+        requestMap.put(expenseTypeKey, expense.getExpenseType());
+        requestMap.put(dateKey , getDate(expense));
+
+        return makeRequest(url, requestMap);
+    }
+
+    private String getDate(ExpenseEntry expense) {
+        return new DateTime(expense.getCreatedAt()).toString("yyyy-MM-dd");
+    }
+
+    private String makeRequest(String url, Map<String, String> requestMap) throws IOException {
         JSONObject json = new JSONObject(requestMap);
 
         RequestBody body = RequestBody.create(JSON, json.toString());
@@ -51,4 +65,5 @@ public class KuluBackend {
 
         return response.body().string();
     }
+
 }

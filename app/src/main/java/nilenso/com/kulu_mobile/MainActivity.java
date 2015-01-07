@@ -22,7 +22,9 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.melnykov.fab.FloatingActionButton;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,13 +69,23 @@ public class MainActivity extends ActionBarActivity {
     private void updateView() {
         setContentView(R.layout.activity_main);
         ListView invoiceList = (ListView) findViewById(R.id.listView);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+        FloatingActionButton cameraExpense = (FloatingActionButton) findViewById(R.id.camera_expense);
+        cameraExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dispatchTakePictureIntent();
             }
         });
+
+        FloatingActionButton pettyExpense = (FloatingActionButton) findViewById(R.id.petty_expense);
+        pettyExpense.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                addExpense(Uri.EMPTY);
+            }
+        });
+
         invoiceList.invalidate();
         RealmResults<ExpenseEntry> expenses = null;
 
@@ -89,7 +101,6 @@ public class MainActivity extends ActionBarActivity {
         }
         invoiceListAdapter = new InvoiceListAdapter(this, R.layout.invoices_list_item, expenses);
         invoiceList.setAdapter(invoiceListAdapter);
-        fab.attachToListView(invoiceList);
     }
 
     @Override
@@ -146,24 +157,21 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onReceive(final Context context, Intent intent) {
             Bundle extra = intent.getExtras();
-            String fileName = extra.getString(SyncService.FILEUPLOADED_EXTRA);
-            File file = new File(fileName);
-
-            deleteUploadedExpense(file);
-
+            String expenseEntry = extra.getString(SyncService.FILEUPLOADED_EXTRA);
+            deleteUploadedExpense(expenseEntry);
             Toast.makeText(context,
-                    "Upload finished for " + file.getName(), Toast.LENGTH_SHORT).show();
+                    "Upload finished for " + expenseEntry, Toast.LENGTH_SHORT).show();
 
             invoiceListAdapter.notifyDataSetChanged();
         }
     };
 
-    private void deleteUploadedExpense(File file) {
+    private void deleteUploadedExpense(String expenseEntry) {
         Realm realm = Realm.getInstance(this);
         realm.removeAllChangeListeners();
         realm.beginTransaction();
         ExpenseEntry expense = realm.where(ExpenseEntry.class)
-                .equalTo("invoice", file.getName())
+                .equalTo("id", expenseEntry)
                 .findFirst();
         if (expense != null) expense.setDeleted(true);
         realm.commitTransaction();

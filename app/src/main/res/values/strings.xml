@@ -23,5 +23,7 @@
     <string name="personal">Self</string>
     <string name="paidFor">Paid for</string>
     <string name="paidBy">Paid by</string>
+    <string name="petty_expense">No Proof</string>
+    <string name="camera_expense">Take Photo</string>
 
 </resources>

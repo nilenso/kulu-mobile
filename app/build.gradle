@@ -24,6 +24,5 @@ dependencies {
     compile files('libs/aws-android-sdk-2.0.5-core.jar', 'libs/commons-io-2.4.jar')
     compile 'com.android.support:support-v4:19.0.0'
     compile 'com.android.support:appcompat-v7:19.0.0'
-    compile 'com.melnykov:floatingactionbutton:1.1.0'
-
+    compile 'com.getbase:floatingactionbutton:1.5.1'
 }

@@ -11,9 +11,10 @@ public class ExpenseEntry extends RealmObject {
     private Date createdAt;
     private String invoicePath;
     private boolean deleted;
+    private String invoice;
 
     @Index
-    private String invoice;
+    private String id;
 
 
     public String getComments() {
@@ -60,7 +61,10 @@ public class ExpenseEntry extends RealmObject {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
+
+    public String getId() { return id; }
+
+    public void setId(String id) { this.id = id; }
+
 }

@@ -14,6 +14,7 @@ import android.widget.Spinner;
 
 import java.io.File;
 import java.util.Date;
+import java.util.UUID;
 
 import io.realm.Realm;
 
@@ -110,6 +111,7 @@ public class RecordExpense extends FragmentActivity {
         expenseEntry.setInvoice(getFileNameFromUri(invoiceLocation));
         expenseEntry.setInvoicePath(invoiceLocation);
         expenseEntry.setCreatedAt(new Date());
+        expenseEntry.setId(UUID.randomUUID().toString());
         realm.commitTransaction();
     }
 

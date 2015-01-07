@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
@@ -22,20 +21,17 @@ import com.readystatesoftware.simpl3r.Uploader.UploadProgressListener;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
 
 class SyncAdapter extends AbstractThreadedSyncAdapter {
     public static final String TAG = "SyncAdapter";
-    public static final String ARG_FILE_PATH = "file_path";
     public static final String S3KEY_EXTRA = "com.kulu_mobile.s3key";
     public static final String S3LOCATION_EXTRA = "com.kulu_mobile.s3location";
     public static final String FILEUPLOADED_EXTRA = "com.kulu_mobile.filetoremove";
 
     public static final String UPLOAD_STATE_CHANGED_ACTION = "com.kulu_mobile.UPLOAD_STATE_CHANGED_ACTION";
-    public static final String UPLOAD_CANCELLED_ACTION = "com.kulu_mobile.UPLOAD_CANCELLED_ACTION";
     public static final String UPLOAD_FINISHED_ACTION = "com.kulu_mobile.UPLOAD_FINISHED_ACTION";
 
     public static final String PERCENT_EXTRA = "com.kulu_mobile.percent";
@@ -77,12 +73,23 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         Log.i(TAG, "Beginning network synchronization");
         Realm realm = Realm.getInstance(getContext());
         RealmResults<ExpenseEntry> expenseEntries = realm.where(ExpenseEntry.class).equalTo("deleted", false).findAll();
-        ArrayList<String> filePaths = new ArrayList<String>();
 
-        for (ExpenseEntry expense : expenseEntries)
-            filePaths.add(expense.getInvoicePath());
+        for (ExpenseEntry expense : expenseEntries) {
+            String filePath = expense.getInvoicePath();
 
-        for (String filePath : filePaths) {
+            if (filePath.isEmpty()) {
+                try {
+                    String msg = "Uploading " + expense.getId();
+                    Notification notification = buildNotification(msg, 0);
+                    nm.notify(NOTIFY_ID_UPLOAD, notification);
+                    uploadInvoice(expense);
+                    broadcastState(100, msg);
+                    broadcastFinished(expense.getId());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                continue;
+            }
 
             File fileToUpload = new File(filePath);
 
@@ -125,10 +132,10 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             try {
                 String fileName = fileToUpload.getName();
                 Log.e(TAG, s3Location + " " + fileName);
-                uploadInvoice(s3Location, fileName);
+                uploadInvoice(s3Location, expense);
                 broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
                 nm.notify(NOTIFY_ID_UPLOAD, buildNotification("Upload finished", 100));
-                broadcastFinished(s3Location, fileToUpload.toString());
+                broadcastFinished(s3Location, expense.getId());
             } catch (IOException e) {
                 broadcastState(s3ObjectKey, -1, "Upload couldn't be finished as connection to Kulu Backend failed");
                 nm.notify(NOTIFY_ID_UPLOAD + 1, buildNotification("Upload couldn't be finished as the connection to the backend failed.", -1));
@@ -137,21 +144,26 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         nm.cancel(NOTIFY_ID_UPLOAD);
     }
 
-    private void uploadInvoice(String s3Location, String fileName) throws IOException {
+    private void uploadInvoice(String s3Location, ExpenseEntry result) throws IOException {
         KuluBackend backend = new KuluBackend();
-
-        Realm realm = Realm.getInstance(getContext());
-        ExpenseEntry result = realm.where(ExpenseEntry.class)
-                .equalTo("invoice", fileName)
-                .findFirst();
-
         backend.createInvoice(getContext().getString(R.string.kulu_backend_service_url), s3Location, result);
-        realm.close();
+    }
+
+    private void uploadInvoice(ExpenseEntry result) throws IOException {
+        KuluBackend backend = new KuluBackend();
+        backend.createInvoice(getContext().getString(R.string.kulu_backend_service_url), result);
     }
 
     private void broadcastFinished(String s3Location, String fileUploaded) {
         Bundle b = new Bundle();
         b.putString(S3LOCATION_EXTRA, s3Location);
+        b.putString(FILEUPLOADED_EXTRA, fileUploaded);
+
+        broadcast(UPLOAD_FINISHED_ACTION, b);
+    }
+
+    private void broadcastFinished(String fileUploaded) {
+        Bundle b = new Bundle();
         b.putString(FILEUPLOADED_EXTRA, fileUploaded);
 
         broadcast(UPLOAD_FINISHED_ACTION, b);
@@ -185,6 +197,13 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     private void broadcastState(String s3key, int percent, String msg) {
         Bundle b = new Bundle();
         b.putString(S3KEY_EXTRA, s3key);
+        b.putInt(PERCENT_EXTRA, percent);
+        b.putString(MSG_EXTRA, msg);
+        broadcast(UPLOAD_STATE_CHANGED_ACTION, b);
+    }
+
+    private void broadcastState(int percent, String msg) {
+        Bundle b = new Bundle();
         b.putInt(PERCENT_EXTRA, percent);
         b.putString(MSG_EXTRA, msg);
         broadcast(UPLOAD_STATE_CHANGED_ACTION, b);
