@@ -5,10 +5,10 @@
     <string name="action_settings">Settings</string>
     <string name="camera_invoice">Scan</string>
     <string name="upload_button">Button to the image to the backend</string>
-    <string name="kulu_s3_tmp_bucket">dev_kulu_invoices_tmp</string>
-    <string name="kulu_s3_access_key_id">AKIAIQRWHSDWA6CFUGIA</string>
-    <string name="kulu_s3_secret_access_key">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</string>
-    <string name="kulu_backend_service_url">http://192.168.1.182:3001/invoices</string>
+    <string name="kulu_s3_tmp_bucket">staging-kulu-invoices-tmp</string>
+    <string name="kulu_s3_access_key_id">AKIAJHEFWQGZPG3ZWTMA</string>
+    <string name="kulu_s3_secret_access_key">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</string>
+    <string name="kulu_backend_service_url">http://kulu-backend-staging.herokuapp.com/invoices</string>
     <string name="title_activity_record_expense"></string>
     <string name="hello_world">Hello world!</string>
     <string name="merchant_hint">Merchant Name</string>

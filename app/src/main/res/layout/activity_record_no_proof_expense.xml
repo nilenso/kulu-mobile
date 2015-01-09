@@ -71,6 +71,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/paidFor"
+        android:spinnerMode="dropdown"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp" />
@@ -120,7 +121,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/currency"
         android:layout_below="@+id/merchantName"
-        android:padding="0dip"
+        android:padding="4dip"
+        android:spinnerMode="dropdown"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="10dp"
