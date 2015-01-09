@@ -25,4 +25,6 @@ dependencies {
     compile 'com.android.support:support-v4:19.0.0'
     compile 'com.android.support:appcompat-v7:19.0.0'
     compile 'com.getbase:floatingactionbutton:1.5.1'
+    compile 'com.mobsandgeeks:android-saripaar:2.0-SNAPSHOT'
 }
+

@@ -58,7 +58,16 @@
         </service>
 
         <activity
-            android:name="nilenso.com.kulu_mobile.RecordExpense"
+            android:name=".expenses.RecordExpense"
+            android:label="@string/title_activity_record_expense"
+            android:parentActivityName="nilenso.com.kulu_mobile.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="nilenso.com.kulu_mobile.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".expenses.RecordNoProofExpense"
             android:label="@string/title_activity_record_expense"
             android:parentActivityName="nilenso.com.kulu_mobile.MainActivity" >
             <meta-data

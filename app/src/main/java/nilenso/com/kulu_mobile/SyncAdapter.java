@@ -82,65 +82,59 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                     String msg = "Uploading " + expense.getId();
                     Notification notification = buildNotification(msg, 0);
                     nm.notify(NOTIFY_ID_UPLOAD, notification);
-                    uploadInvoice(expense);
+                    uploadNoProofInvoice(expense);
                     broadcastState(100, msg);
+                    nm.notify(NOTIFY_ID_UPLOAD, buildNotification("Upload finished", 100));
                     broadcastFinished(expense.getId());
                 } catch (IOException e) {
                     e.printStackTrace();
                     broadcastState(-1, "Upload couldn't be finished as connection to Kulu Backend failed");
+                    nm.notify(NOTIFY_ID_UPLOAD, buildNotification("Upload couldn't be finished as the connection to the backend failed.", -1));
+                }
+            } else {
+
+                File fileToUpload = new File(filePath);
+                final String s3ObjectKey = FileUtils.getLastPartOfFile(filePath);
+                String s3BucketName = getContext().getString(R.string.kulu_s3_tmp_bucket);
+                final String msg = "Uploading " + s3ObjectKey + "...";
+
+                // create a new uploader for this file
+                Log.e(TAG, "Bucket " + s3BucketName + " " + s3ObjectKey + " " + fileToUpload);
+                uploader = new Uploader(getContext(), s3Client, s3BucketName, s3ObjectKey, fileToUpload);
+                uploader.setProgressListener(new UploadProgressListener() {
+                    @Override
+                    public void progressChanged(ProgressEvent progressEvent,
+                                                long bytesUploaded, int percentUploaded) {
+                        Notification notification = buildNotification(msg, percentUploaded);
+                        nm.notify(NOTIFY_ID_UPLOAD, notification);
+                        broadcastState(s3ObjectKey, percentUploaded, msg);
+                    }
+                });
+
+
+                String s3Location = null;
+
+                try {
+                    s3Location = uploader.start();
+                } catch (UploadIterruptedException uie) {
+                    Log.e(TAG, "Upload not happened");
+                    broadcastState(s3ObjectKey, -1, "Upload was interrupted");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    broadcastState(s3ObjectKey, -1, "Upload was interrupted");
+                }
+
+                try {
+                    String fileName = fileToUpload.getName();
+                    Log.e(TAG, s3Location + " " + fileName);
+                    uploadInvoice(s3Location, expense);
+                    broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
+                    nm.notify(NOTIFY_ID_UPLOAD, buildNotification("Upload finished", 100));
+                    broadcastFinished(s3Location, expense.getId());
+                } catch (IOException e) {
+                    broadcastState(s3ObjectKey, -1, "Upload couldn't be finished as connection to Kulu Backend failed");
                     nm.notify(NOTIFY_ID_UPLOAD + 1, buildNotification("Upload couldn't be finished as the connection to the backend failed.", -1));
                 }
-                continue;
-            }
-
-            File fileToUpload = new File(filePath);
-
-            final String s3ObjectKey = FileUtils.getLastPartOfFile(filePath);
-
-            String s3BucketName = getContext().getString(R.string.kulu_s3_tmp_bucket);
-
-            final String msg = "Uploading " + s3ObjectKey + "...";
-
-            Notification notification = buildNotification(msg, 0);
-            nm.notify(NOTIFY_ID_UPLOAD, notification);
-            broadcastState(s3ObjectKey, 0, msg);
-
-            // create a new uploader for this file
-            Log.e(TAG, "Bucket " + s3BucketName + " " + s3ObjectKey + " " + fileToUpload);
-            uploader = new Uploader(getContext(), s3Client, s3BucketName, s3ObjectKey, fileToUpload);
-            uploader.setProgressListener(new UploadProgressListener() {
-                @Override
-                public void progressChanged(ProgressEvent progressEvent,
-                                            long bytesUploaded, int percentUploaded) {
-                    Notification notification = buildNotification(msg, percentUploaded);
-                    nm.notify(NOTIFY_ID_UPLOAD, notification);
-                    broadcastState(s3ObjectKey, percentUploaded, msg);
-                }
-            });
-
-
-            String s3Location = null;
-
-            try {
-                s3Location = uploader.start();
-            } catch (UploadIterruptedException uie) {
-                Log.e(TAG, "Upload not happened");
-                broadcastState(s3ObjectKey, -1, "Upload was interrupted");
-            } catch (Exception e) {
-                e.printStackTrace();
-                broadcastState(s3ObjectKey, -1, "Upload was interrupted");
-            }
-
-            try {
-                String fileName = fileToUpload.getName();
-                Log.e(TAG, s3Location + " " + fileName);
-                uploadInvoice(s3Location, expense);
-                broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
-                nm.notify(NOTIFY_ID_UPLOAD, buildNotification("Upload finished", 100));
-                broadcastFinished(s3Location, expense.getId());
-            } catch (IOException e) {
-                broadcastState(s3ObjectKey, -1, "Upload couldn't be finished as connection to Kulu Backend failed");
-                nm.notify(NOTIFY_ID_UPLOAD + 1, buildNotification("Upload couldn't be finished as the connection to the backend failed.", -1));
             }
         }
         nm.cancel(NOTIFY_ID_UPLOAD);
@@ -151,9 +145,9 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         backend.createInvoice(getContext().getString(R.string.kulu_backend_service_url), s3Location, result);
     }
 
-    private void uploadInvoice(ExpenseEntry result) throws IOException {
+    private void uploadNoProofInvoice(ExpenseEntry result) throws IOException {
         KuluBackend backend = new KuluBackend();
-        backend.createInvoice(getContext().getString(R.string.kulu_backend_service_url), result);
+        backend.createNoProofInvoice(getContext().getString(R.string.kulu_backend_service_url), result);
     }
 
     private void broadcastFinished(String s3Location, String fileUploaded) {

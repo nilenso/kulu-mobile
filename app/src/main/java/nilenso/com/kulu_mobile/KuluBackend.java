@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import io.realm.Realm;
 
@@ -25,6 +26,9 @@ public class KuluBackend {
     private final String remarksKey = "remarks";
     private final String expenseTypeKey = "expense_type";
     private final String dateKey = "date";
+    private final String merchantNameKey = "name";
+    private final String amountKey = "amount";
+    private final String currencyKey = "currency";
     private final String invoice = "invoice";
 
     public KuluBackend() {
@@ -32,8 +36,8 @@ public class KuluBackend {
     }
 
     public String createInvoice(String url, String s3Location, ExpenseEntry expense) throws IOException {
-        Map<String, Map<String, String>> requestMap = new HashMap<String, Map<String, String>>();
-        Map<String, String> subRequestMap = new HashMap<String, String>();
+        Map<String, Map<String, Object>> requestMap = new HashMap<String, Map<String, Object>>();
+        Map<String, Object> subRequestMap = new HashMap<String, Object>();
         subRequestMap.put(idKey, expense.getId());
         subRequestMap.put(requestKey, FileUtils.getLastPartOfFile(s3Location));
         subRequestMap.put(remarksKey, expense.getComments());
@@ -45,13 +49,17 @@ public class KuluBackend {
         return makeRequest(url, requestMap);
     }
 
-    public String createInvoice(String url, ExpenseEntry expense) throws IOException {
-        Map<String, Map<String, String>> requestMap = new HashMap<String, Map<String, String>>();
-        Map<String, String> subRequestMap = new HashMap<String, String>();
+    public String createNoProofInvoice(String url, ExpenseEntry expense) throws IOException {
+        Map<String, Map<String, Object>> requestMap = new HashMap<String, Map<String, Object>>();
+        Map<String, Object> subRequestMap = new HashMap<String, Object>();
         subRequestMap.put(idKey, expense.getId());
         subRequestMap.put(remarksKey, expense.getComments());
         subRequestMap.put(expenseTypeKey, expense.getExpenseType());
-        subRequestMap.put(dateKey , getDate(expense));
+        subRequestMap.put(dateKey , getExpenseDate(expense));
+        subRequestMap.put(merchantNameKey , expense.getMerchantName());
+        subRequestMap.put(amountKey , String.valueOf(expense.getAmount()));
+        subRequestMap.put(currencyKey , expense.getCurrency());
+
         requestMap.put(invoice, subRequestMap);
 
         return makeRequest(url, requestMap);
@@ -61,7 +69,11 @@ public class KuluBackend {
         return new DateTime(expense.getCreatedAt()).toString("yyyy-MM-dd");
     }
 
-    private String makeRequest(String url, Map<String, Map<String, String>> requestMap) throws IOException {
+    private String getExpenseDate(ExpenseEntry expense) {
+        return new DateTime(expense.getExpenseDate()).toString("yyyy-MM-dd");
+    }
+
+    private String makeRequest(String url, Map<String, Map<String, Object>> requestMap) throws IOException {
         JSONObject json = new JSONObject(requestMap);
 
         RequestBody body = RequestBody.create(JSON, json.toString());

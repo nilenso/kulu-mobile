@@ -8,10 +8,14 @@ import io.realm.annotations.Index;
 public class ExpenseEntry extends RealmObject {
     private String comments;
     private String expenseType;
-    private Date createdAt;
     private String invoicePath;
     private boolean deleted;
     private String invoice;
+    private String merchantName;
+    private int amount;
+    private String currency;
+    private Date expenseDate;
+    private Date createdAt;
 
     @Index
     private String id;
@@ -66,5 +70,21 @@ public class ExpenseEntry extends RealmObject {
     public String getId() { return id; }
 
     public void setId(String id) { this.id = id; }
+
+    public Date getExpenseDate() { return expenseDate; }
+
+    public void setExpenseDate(Date expenseDate) { this.expenseDate = expenseDate; }
+
+    public String getMerchantName() { return merchantName; }
+
+    public void setMerchantName(String merchantName) { this.merchantName = merchantName; }
+
+    public int getAmount() { return amount; }
+
+    public void setAmount(int amount) { this.amount = amount; }
+
+    public String getCurrency() { return currency; }
+
+    public void setCurrency(String currency) { this.currency = currency; }
 
 }

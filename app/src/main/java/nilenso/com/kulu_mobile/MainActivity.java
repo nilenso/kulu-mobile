@@ -18,13 +18,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +34,8 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmMigrationNeededException;
 import nilenso.com.kulu_mobile.accounts.GenericAccountService;
+import nilenso.com.kulu_mobile.expenses.RecordExpense;
+import nilenso.com.kulu_mobile.expenses.RecordNoProofExpense;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -82,7 +82,7 @@ public class MainActivity extends ActionBarActivity {
         pettyExpense.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                addExpense(Uri.EMPTY);
+                addExpenseWithoutProof();
             }
         });
 
@@ -96,8 +96,7 @@ public class MainActivity extends ActionBarActivity {
         } catch (RealmMigrationNeededException ex) {
             Realm.deleteRealmFile(this);
             Realm realm = Realm.getInstance(this);
-            expenses = realm.where(ExpenseEntry.class).equalTo("deleted", false).findAll("createdAt", RealmResults.SORT_ORDER_DESCENDING);
-
+            expenses = realm.where(ExpenseEntry.class).findAll();
         }
         invoiceListAdapter = new InvoiceListAdapter(this, R.layout.invoices_list_item, expenses);
         invoiceList.setAdapter(invoiceListAdapter);
@@ -150,6 +149,11 @@ public class MainActivity extends ActionBarActivity {
         Intent recordExpense = new Intent(this, RecordExpense.class);
         recordExpense.putExtra(INVOICE_LOCATION, invoiceURI.getPath());
 
+        startActivity(recordExpense);
+    }
+
+    private void addExpenseWithoutProof() {
+        Intent recordExpense = new Intent(this, RecordNoProofExpense.class);
         startActivity(recordExpense);
     }
 

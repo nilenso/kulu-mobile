@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile;
+package nilenso.com.kulu_mobile.expenses;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -13,15 +13,19 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.UUID;
 
 import io.realm.Realm;
+import nilenso.com.kulu_mobile.ExpenseEntry;
+import nilenso.com.kulu_mobile.MainActivity;
+import nilenso.com.kulu_mobile.R;
 
 
 public class RecordExpense extends FragmentActivity {
-    private String LOG_TAG = "RecordExpenseActivity";
-    private String invoiceLocation = null;
+    protected String LOG_TAG = "RecordExpenseActivity";
+    protected String invoiceLocation = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +35,10 @@ public class RecordExpense extends FragmentActivity {
         invoiceLocation = getIntent().getStringExtra(MainActivity.INVOICE_LOCATION);
     }
 
-    private void setupSpinner() {
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+    protected void setupSpinner() {
+        Spinner spinner = (Spinner) findViewById(R.id.paidFor);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.planets_array, android.R.layout.simple_spinner_item);
+                R.array.paid_for_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
@@ -82,32 +86,31 @@ public class RecordExpense extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void saveExpense(View view) {
+    public void saveExpense(View view) throws ParseException {
         EditText comments = (EditText) findViewById(R.id.editComments);
-        String checkedExpenseType = getCheckedRadioButtonValue();
-        String paidBy = getPaidByValue();
-        createExpenseEntry(comments, getExpenseType(checkedExpenseType, paidBy));
+        createExpenseEntry();
         finish();
     }
 
-    private String getExpenseType(String checkedExpenseType, String paidBy) {
+    protected String getExpenseType() {
+        String checkedExpenseType = getCheckedRadioButtonValue();
+        String paidBy = getPaidByValue();
         if (paidBy.equals("Self") && checkedExpenseType.equals("Company"))
             return "Reimbursement";
         return checkedExpenseType;
     }
 
-
-    private String getPaidByValue() {
-        Spinner mySpinner=(Spinner) findViewById(R.id.spinner);
+    protected String getPaidByValue() {
+        Spinner mySpinner=(Spinner) findViewById(R.id.paidFor);
         return mySpinner.getSelectedItem().toString();
     }
 
-    private void createExpenseEntry(EditText comments, String checkedExpenseType) {
+    protected void createExpenseEntry() throws ParseException {
         Realm realm = Realm.getInstance(this);
         realm.beginTransaction();
         ExpenseEntry expenseEntry = realm.createObject(ExpenseEntry.class);
-        expenseEntry.setComments(comments.getText().toString());
-        expenseEntry.setExpenseType(checkedExpenseType);
+        expenseEntry.setComments(getRemarks());
+        expenseEntry.setExpenseType(getExpenseType());
         expenseEntry.setInvoice(getFileNameFromUri(invoiceLocation));
         expenseEntry.setInvoicePath(invoiceLocation);
         expenseEntry.setCreatedAt(new Date());
@@ -115,11 +118,17 @@ public class RecordExpense extends FragmentActivity {
         realm.commitTransaction();
     }
 
-    private String getFileNameFromUri(String invoiceLocation) {
+    protected String getFileNameFromUri(String invoiceLocation) {
         return new File(invoiceLocation).getName();
     }
 
-    private String getCheckedRadioButtonValue() {
+    protected String getRemarks() {
+        return ((EditText) findViewById(R.id.editComments)).getText().toString();
+    }
+
+
+
+    protected String getCheckedRadioButtonValue() {
         RadioGroup expenseType = (RadioGroup) findViewById(R.id.expense_type);
         switch(expenseType.getCheckedRadioButtonId()) {
             case R.id.company:

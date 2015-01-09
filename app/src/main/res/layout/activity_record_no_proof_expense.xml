@@ -4,7 +4,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="nilenso.com.kulu_mobile.RecordExpense"
+    tools:context="nilenso.com.kulu_mobile.expenses.RecordNoProofExpense"
     >
 
     <Button
@@ -29,17 +29,18 @@
         android:inputType="text|textAutoComplete|textAutoCorrect"
         android:layout_below="@+id/expense_type"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="5dp" />
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id = '@+id/expense_type'
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/textView"
         android:layout_alignParentLeft="true"
-        android:layout_marginBottom="30dp">
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="10dp">
 
     <RadioButton
         android:layout_width="wrap_content"
@@ -65,13 +66,14 @@
         android:layout_marginLeft="10dp" />
     </RadioGroup>
 
+
     <Spinner
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/paidFor"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView2"
-        android:layout_alignParentLeft="true" />
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -80,12 +82,12 @@
         android:text="@string/paidFor"
         android:textSize="24sp"
         android:id="@+id/textView"
+        android:typeface="sans"
+        android:textStyle="normal"
         android:layout_below="@+id/paidFor"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="38dp"
-        android:typeface="sans"
-        android:textStyle="normal" />
+        android:layout_marginBottom="5dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -93,12 +95,62 @@
         android:text="@string/paidBy"
         android:textSize="24sp"
         android:id="@+id/textView2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:textStyle="normal"
         android:typeface="normal"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_alignParentTop="true" />
+        android:layout_above="@+id/paidFor"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="5dp" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName|textAutoComplete|textAutoCorrect"
+        android:hint="Merchant Name"
+        android:ems="10"
+        android:id="@+id/merchantName"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="10dp" />
+
+    <Spinner
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/currency"
+        android:layout_below="@+id/merchantName"
+        android:padding="0dip"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_alignRight="@+id/textView2"
+        android:layout_alignEnd="@+id/textView2" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/amount"
+        android:hint="@string/expense_amount"
+        android:layout_alignBottom="@+id/currency"
+        android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@+id/textView"
+        android:layout_marginTop="10dp" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:ems="10"
+        android:id="@+id/datePicker"
+        android:onClick="showDatePickerDialog"
+        android:hint="@string/expense_date"
+        android:layout_above="@+id/textView2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="10dp" />
 
 
 </RelativeLayout>
