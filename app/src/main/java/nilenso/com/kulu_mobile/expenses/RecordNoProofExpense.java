@@ -83,6 +83,7 @@ public class RecordNoProofExpense extends RecordExpense {
         expenseEntry.setId(UUID.randomUUID().toString());
         expenseEntry.setAmount(getAmount());
         expenseEntry.setMerchantName(getMerchantName());
+        expenseEntry.setExpenseDate(getExpenseDate());
         realm.commitTransaction();
     }
 

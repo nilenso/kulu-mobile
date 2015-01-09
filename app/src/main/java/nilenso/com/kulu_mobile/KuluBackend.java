@@ -57,7 +57,7 @@ public class KuluBackend {
         subRequestMap.put(expenseTypeKey, expense.getExpenseType());
         subRequestMap.put(dateKey , getExpenseDate(expense));
         subRequestMap.put(merchantNameKey , expense.getMerchantName());
-        subRequestMap.put(amountKey , String.valueOf(expense.getAmount()));
+        subRequestMap.put(amountKey , expense.getAmount());
         subRequestMap.put(currencyKey , expense.getCurrency());
 
         requestMap.put(invoice, subRequestMap);
