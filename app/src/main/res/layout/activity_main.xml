@@ -39,7 +39,6 @@
             fab:fab_colorNormal="@color/white"
             fab:fab_icon="@drawable/ic_action_add_light"
             fab:fab_title="@string/petty_expense"
-            fab:fab_size="mini"
             fab:fab_colorPressed="@color/white_pressed"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
@@ -49,7 +48,6 @@
             fab:fab_colorNormal="@color/white"
             fab:fab_icon="@drawable/ic_action_camera"
             fab:fab_title="@string/camera_expense"
-            fab:fab_size="mini"
             fab:fab_colorPressed="@color/white_pressed"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>

@@ -55,13 +55,11 @@ public class RecordNoProofExpense extends RecordExpense {
     private  void setupDatePicker() {
         SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, yyyy");
         ((TextView) findViewById(R.id.datePicker)).setText(formatter.format(new Date()));
-        ((EditText) findViewById(R.id.datePicker)).setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        ((TextView) findViewById(R.id.datePicker)).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    DialogFragment newFragment = new DatePickerFragment();
-                    newFragment.show(getFragmentManager(), "datePicker");
-                }
+            public void onClick(View v) {
+                DialogFragment newFragment = new DatePickerFragment();
+                newFragment.show(getFragmentManager(), "datePicker");
             }
         });
     }
