@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -37,6 +39,10 @@ import nilenso.com.kulu_mobile.accounts.GenericAccountService;
 import nilenso.com.kulu_mobile.expenses.RecordExpense;
 import nilenso.com.kulu_mobile.expenses.RecordNoProofExpense;
 
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.common.AccountPicker;
+
 
 public class MainActivity extends ActionBarActivity {
     private InvoiceListAdapter invoiceListAdapter;
@@ -56,6 +62,8 @@ public class MainActivity extends ActionBarActivity {
 
     // An account type, in the form of a domain name
     Account mAccount;
+
+
     private final RealmChangeListener syncListener = new RealmChangeListener() {
             @Override
             public void onChange() {
@@ -203,6 +211,8 @@ public class MainActivity extends ActionBarActivity {
                         "Failed to capture image.", Toast.LENGTH_SHORT).show();
             }
         }
+
+
     }
 
     private void setCurrentPhotoPath() {
@@ -268,17 +278,29 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+        getMenuInflater().inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        dispatchTakePictureIntent();
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.sign_out) {
+            startSignOutActivity();
+            return true;
+        }
+
         return true;
     }
 
-
+    private void startSignOutActivity() {
+        Intent intent = new Intent(this, SplashScreen.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(SplashScreen.SIGN_OUT, "true");
+        startActivity(intent);
+    }
 
 
 }

@@ -21,8 +21,11 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('libs/aws-android-sdk-2.0.5-core.jar', 'libs/commons-io-2.4.jar')
+    compile files('libs/aws-android-sdk-2.0.5-core.jar')
+    compile files('libs/commons-io-2.4.jar')
     compile 'com.android.support:support-v4:19.0.0'
+    compile 'com.google.android.gms:play-services-identity:6.5.87'
+    compile 'com.google.android.gms:play-services-plus:6.5.87'
     compile 'com.android.support:appcompat-v7:19.0.0'
     compile 'com.getbase:floatingactionbutton:1.5.1'
     compile 'com.mobsandgeeks:android-saripaar:2.0-SNAPSHOT'

@@ -1,6 +1,7 @@
 package nilenso.com.kulu_mobile;
 
 import android.accounts.Account;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,8 +9,10 @@ import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -21,6 +24,7 @@ import com.readystatesoftware.simpl3r.Uploader.UploadProgressListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -142,12 +146,21 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void uploadInvoice(String s3Location, ExpenseEntry result) throws IOException {
         KuluBackend backend = new KuluBackend();
-        backend.createInvoice(getContext().getString(R.string.kulu_backend_service_url), s3Location, result);
+        backend.createInvoice(getContext().getString(R.string.kulu_backend_service_url), s3Location, result, getUserInfo());
     }
 
     private void uploadNoProofInvoice(ExpenseEntry result) throws IOException {
         KuluBackend backend = new KuluBackend();
-        backend.createNoProofInvoice(getContext().getString(R.string.kulu_backend_service_url), result);
+        backend.createNoProofInvoice(getContext().getString(R.string.kulu_backend_service_url), result, getUserInfo());
+    }
+
+    private HashMap<String, String> getUserInfo() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());;
+        HashMap<String, String> userInfo = new HashMap<String, String>();
+
+        userInfo.put(SplashScreen.DISPLAY_NAME, sharedPref.getString(SplashScreen.DISPLAY_NAME, "stub"));
+        userInfo.put(SplashScreen.ACCOUNT_NAME, sharedPref.getString(SplashScreen.ACCOUNT_NAME, "stub"));
+        return userInfo;
     }
 
     private void broadcastFinished(String s3Location, String fileUploaded) {

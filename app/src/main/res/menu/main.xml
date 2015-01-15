@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:kulu="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity" >
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+    <item android:id="@+id/sign_out"
+        android:title="Sign Out"
         android:orderInCategory="100"
         kulu:showAsAction="never" />
 </menu>

@@ -30,26 +30,31 @@ public class KuluBackend {
     private final String amountKey = "amount";
     private final String currencyKey = "currency";
     private final String invoice = "invoice";
+    private final String emailKey = "email";
+    private final String userNameKey = "user_name";
 
     public KuluBackend() {
         client = new OkHttpClient();
     }
 
-    public String createInvoice(String url, String s3Location, ExpenseEntry expense) throws IOException {
+    public String createInvoice(String url, String s3Location, ExpenseEntry expense, HashMap<String, String> userInfo) throws IOException {
         Map<String, Map<String, Object>> requestMap = new HashMap<String, Map<String, Object>>();
         Map<String, Object> subRequestMap = new HashMap<String, Object>();
         subRequestMap.put(idKey, expense.getId());
         subRequestMap.put(requestKey, FileUtils.getLastPartOfFile(s3Location));
         subRequestMap.put(remarksKey, expense.getComments());
         subRequestMap.put(expenseTypeKey, expense.getExpenseType());
-        subRequestMap.put(dateKey , getDate(expense));
+        subRequestMap.put(dateKey, getDate(expense));
+        subRequestMap.put(emailKey, userInfo.get(SplashScreen.ACCOUNT_NAME));
+        subRequestMap.put(userNameKey, userInfo.get(SplashScreen.DISPLAY_NAME));
+
         requestMap.put(invoice, subRequestMap);
 
 
         return makeRequest(url, requestMap);
     }
 
-    public String createNoProofInvoice(String url, ExpenseEntry expense) throws IOException {
+    public String createNoProofInvoice(String url, ExpenseEntry expense, HashMap<String, String> userInfo) throws IOException {
         Map<String, Map<String, Object>> requestMap = new HashMap<String, Map<String, Object>>();
         Map<String, Object> subRequestMap = new HashMap<String, Object>();
         subRequestMap.put(idKey, expense.getId());
@@ -59,6 +64,8 @@ public class KuluBackend {
         subRequestMap.put(merchantNameKey , expense.getMerchantName());
         subRequestMap.put(amountKey , expense.getAmount());
         subRequestMap.put(currencyKey , expense.getCurrency());
+        subRequestMap.put(emailKey, userInfo.get(SplashScreen.ACCOUNT_NAME));
+        subRequestMap.put(userNameKey, userInfo.get(SplashScreen.DISPLAY_NAME));
 
         requestMap.put(invoice, subRequestMap);
 
