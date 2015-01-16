@@ -46,6 +46,7 @@ public class SplashScreen extends Activity implements
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
 
+
         if (isSigningOut())  signOut();
         if (isUserLoggedIn()) startMainActivity();
 
@@ -58,8 +59,8 @@ public class SplashScreen extends Activity implements
             public void onClick(View v) {
                 if (!mGoogleApiClient.isConnecting()) {
                     mSignInClicked = true;
-                    mGoogleApiClient.connect();
                     pd=ProgressDialog.show(SplashScreen.this,"","Please Wait",false);
+                    mGoogleApiClient.connect();
                     resolveSignInError();
                 }
             }
@@ -100,11 +101,9 @@ public class SplashScreen extends Activity implements
             String personName = currentPerson.getDisplayName();
             String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
             saveUserInfo(personName, email);
+            Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+            startMainActivity();
         }
-        Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-        pd.dismiss();
-        startMainActivity();
-
     }
 
     private void saveUserInfo(String personName, String email) {
@@ -177,6 +176,7 @@ public class SplashScreen extends Activity implements
 
     protected void onStop() {
         super.onStop();
+        if (pd != null) pd.dismiss();
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }

@@ -40,6 +40,7 @@
         <activity
             android:name="nilenso.com.kulu_mobile.SplashScreen"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -74,6 +75,7 @@
         <activity
             android:name=".expenses.RecordExpense"
             android:label="@string/title_activity_record_expense"
+            android:screenOrientation="portrait"
             android:parentActivityName="nilenso.com.kulu_mobile.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

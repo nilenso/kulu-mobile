@@ -302,5 +302,11 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(intent);
+    }
 
 }
