@@ -85,6 +85,7 @@
         <activity
             android:name=".expenses.RecordNoProofExpense"
             android:label="@string/title_activity_record_expense"
+            android:screenOrientation="portrait"
             android:parentActivityName="nilenso.com.kulu_mobile.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
