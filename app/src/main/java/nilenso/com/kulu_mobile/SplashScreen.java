@@ -69,6 +69,7 @@ public class SplashScreen extends Activity implements
 
     private boolean isSigningOut() {
         if (getIntent().getExtras() == null) return false;
+        if (getIntent().getExtras().getString(SIGN_OUT) == null) return false;
         return getIntent().getExtras().getString(SIGN_OUT).equals("true");
     }
 
@@ -136,12 +137,13 @@ public class SplashScreen extends Activity implements
 
     @Override
     public void onConnectionSuspended(int i) {
+        if (pd != null) pd.dismiss();
         mGoogleApiClient.connect();
     }
 
     @Override
     public void onDisconnected() {
-        // Nothing to do for now
+        if (pd != null) pd.dismiss();
     }
 
     @Override
@@ -150,6 +152,8 @@ public class SplashScreen extends Activity implements
             // Store the ConnectionResult so that we can use it later when the user clicks
             // 'sign-in'.
             mConnectionResult = connectionResult;
+
+            if (pd != null) pd.dismiss();
 
             if (mSignInClicked) {
                 // The user has already clicked 'sign-in' so we attempt to resolve all
