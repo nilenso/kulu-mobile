@@ -1,12 +1,8 @@
-package nilenso.com.kulu_mobile.validations;
+package nilenso.com.kulu_mobile2.validations;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -14,7 +10,7 @@ import com.mobsandgeeks.saripaar.Validator;
 import java.text.ParseException;
 import java.util.List;
 
-import nilenso.com.kulu_mobile.expenses.RecordNoProofExpense;
+import nilenso.com.kulu_mobile2.expenses.RecordNoProofExpense;
 
 public class AddExpenseActivity implements Validator.ValidationListener {
     private Context mContext;

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="nilenso.com.kulu_mobile"
-    android:versionCode="13"
-    android:versionName="1.12"
+    package="nilenso.com.kulu_mobile2"
+    android:versionCode="14"
+    android:versionName="1.13"
     >
 
     <uses-feature
@@ -32,13 +32,13 @@
 
 
         <activity
-            android:name="nilenso.com.kulu_mobile.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light" >
         </activity>
 
         <activity
-            android:name="nilenso.com.kulu_mobile.SplashScreen"
+            android:name=".SplashScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light" >
@@ -48,7 +48,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name="nilenso.com.kulu_mobile.SyncService"
+        <service android:name=".SyncService"
             android:exported="true"
             android:process=":sync">
             <intent-filter>
@@ -61,10 +61,10 @@
 
         <provider
             android:name=".provider.StubProvider"
-            android:authorities="nilenso.com.kulu_mobile.sync.basicsyncadapter"
+            android:authorities="nilenso.com.kulu_mobile2.sync.basicsyncadapter"
             android:exported="false" />
 
-        <service android:name="nilenso.com.kulu_mobile.accounts.GenericAccountService">
+        <service android:name=".accounts.GenericAccountService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -76,20 +76,20 @@
             android:name=".expenses.RecordExpense"
             android:label="@string/title_activity_record_expense"
             android:screenOrientation="portrait"
-            android:parentActivityName="nilenso.com.kulu_mobile.MainActivity" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="nilenso.com.kulu_mobile.MainActivity" />
+                android:value=".MainActivity" />
         </activity>
 
         <activity
             android:name=".expenses.RecordNoProofExpense"
             android:label="@string/title_activity_record_expense"
             android:screenOrientation="portrait"
-            android:parentActivityName="nilenso.com.kulu_mobile.MainActivity" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="nilenso.com.kulu_mobile.MainActivity" />
+                android:value=".MainActivity" />
         </activity>
     </application>
 

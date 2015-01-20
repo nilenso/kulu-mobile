@@ -1,7 +1,6 @@
-package nilenso.com.kulu_mobile;
+package nilenso.com.kulu_mobile2;
 
 import android.accounts.Account;
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -76,9 +75,11 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
         Log.i(TAG, "Beginning network synchronization");
         Realm realm = Realm.getInstance(getContext());
+        realm.refresh();
         RealmResults<ExpenseEntry> expenseEntries = realm.where(ExpenseEntry.class).equalTo("deleted", false).findAll();
 
-        for (ExpenseEntry expense : expenseEntries) {
+        for (int i=0; i < expenseEntries.size(); i++) {
+            ExpenseEntry expense = expenseEntries.get(i);
             String filePath = expense.getInvoicePath();
 
             if (filePath.isEmpty()) {
@@ -89,6 +90,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                     uploadNoProofInvoice(expense);
                     broadcastState(100, msg);
                     nm.notify(NOTIFY_ID_UPLOAD, buildNotification("Upload finished", 100));
+                    deleteUploadedExpense(expense.getId());
                     broadcastFinished(expense.getId());
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -134,6 +136,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                     uploadInvoice(s3Location, expense);
                     broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
                     nm.notify(NOTIFY_ID_UPLOAD, buildNotification("Upload finished", 100));
+                    deleteUploadedExpense(expense.getId());
                     broadcastFinished(s3Location, expense.getId());
                 } catch (IOException e) {
                     broadcastState(s3ObjectKey, -1, "Upload couldn't be finished as connection to Kulu Backend failed");
@@ -214,6 +217,19 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         b.putInt(PERCENT_EXTRA, percent);
         b.putString(MSG_EXTRA, msg);
         broadcast(UPLOAD_STATE_CHANGED_ACTION, b);
+    }
+
+    private void deleteUploadedExpense(String expenseEntry) {
+        Realm realm = Realm.getInstance(getContext());
+        realm.refresh();
+        realm.beginTransaction();
+        realm.removeAllChangeListeners();
+        ExpenseEntry expense = realm.where(ExpenseEntry.class)
+                .equalTo("id", expenseEntry)
+                .findFirst();
+        if (expense != null) expense.setDeleted(true);
+        realm.addChangeListener(MainActivity.syncListener);
+        realm.commitTransaction();
     }
 }
 

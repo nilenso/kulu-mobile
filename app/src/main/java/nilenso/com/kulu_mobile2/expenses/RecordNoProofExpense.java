@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile.expenses;
+package nilenso.com.kulu_mobile2.expenses;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
@@ -18,10 +18,10 @@ import io.realm.Realm;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 
-import nilenso.com.kulu_mobile.ExpenseEntry;
-import nilenso.com.kulu_mobile.R;
-import nilenso.com.kulu_mobile.fragments.DatePickerFragment;
-import nilenso.com.kulu_mobile.validations.AddExpenseActivity;
+import nilenso.com.kulu_mobile2.ExpenseEntry;
+import nilenso.com.kulu_mobile2.R;
+import nilenso.com.kulu_mobile2.fragments.DatePickerFragment;
+import nilenso.com.kulu_mobile2.validations.AddExpenseActivity;
 
 public class RecordNoProofExpense extends RecordExpense {
     private Validator validator;

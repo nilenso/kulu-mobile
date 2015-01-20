@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile;
+package nilenso.com.kulu_mobile2;
 
 
 import com.squareup.okhttp.MediaType;
@@ -11,12 +11,8 @@ import org.joda.time.DateTime;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-
-import io.realm.Realm;
 
 public class KuluBackend {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");

@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile;
+package nilenso.com.kulu_mobile2;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -8,16 +8,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -35,13 +33,9 @@ import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmMigrationNeededException;
-import nilenso.com.kulu_mobile.accounts.GenericAccountService;
-import nilenso.com.kulu_mobile.expenses.RecordExpense;
-import nilenso.com.kulu_mobile.expenses.RecordNoProofExpense;
-
-import com.google.android.gms.auth.GoogleAuthException;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.common.AccountPicker;
+import nilenso.com.kulu_mobile2.accounts.GenericAccountService;
+import nilenso.com.kulu_mobile2.expenses.RecordExpense;
+import nilenso.com.kulu_mobile2.expenses.RecordNoProofExpense;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -51,7 +45,7 @@ public class MainActivity extends ActionBarActivity {
     public static final String CURRENT_PHOTO_PATH = "currentPhotoPath";
     public static final String DEFAULT_PHOTO_PATH = "";
 
-    public static final String AUTHORITY = "nilenso.com.kulu_mobile.sync.basicsyncadapter";
+    public static final String AUTHORITY = "nilenso.com.kulu_mobile2.sync.basicsyncadapter";
 
     public static final long SECONDS_PER_MINUTE = 60L;
     public static final long SYNC_INTERVAL_IN_MINUTES = 30L;
@@ -64,7 +58,7 @@ public class MainActivity extends ActionBarActivity {
     Account mAccount;
 
 
-    private final RealmChangeListener syncListener = new RealmChangeListener() {
+    public final static RealmChangeListener syncListener = new RealmChangeListener() {
             @Override
             public void onChange() {
                 ContentResolver.requestSync(
@@ -100,7 +94,7 @@ public class MainActivity extends ActionBarActivity {
 
         try {
             Realm realm = Realm.getInstance(this);
-            expenses = realm.where(ExpenseEntry.class).equalTo("deleted", false).findAll("createdAt", RealmResults.SORT_ORDER_DESCENDING);
+            expenses = realm.where(ExpenseEntry.class).equalTo("deleted", false).findAllSorted("createdAt", RealmResults.SORT_ORDER_DESCENDING);
         } catch (RealmMigrationNeededException ex) {
             Realm.deleteRealmFile(this);
             Realm realm = Realm.getInstance(this);
@@ -170,7 +164,6 @@ public class MainActivity extends ActionBarActivity {
         public void onReceive(final Context context, Intent intent) {
             Bundle extra = intent.getExtras();
             String expenseEntry = extra.getString(SyncService.FILEUPLOADED_EXTRA);
-            deleteUploadedExpense(expenseEntry);
             Toast.makeText(context,
                     "Upload finished for " + expenseEntry, Toast.LENGTH_SHORT).show();
 

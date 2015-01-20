@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile.provider;
+package nilenso.com.kulu_mobile2.provider;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

@@ -1,8 +1,7 @@
-package nilenso.com.kulu_mobile;
+package nilenso.com.kulu_mobile2;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -114,6 +113,7 @@ public class SplashScreen extends Activity implements
         editor.putString(DISPLAY_NAME, personName);
         editor.putString(LOGGED_IN, "true");
         editor.commit();
+        Log.e(TAG, String.valueOf(sharedPref.contains(LOGGED_IN)));
     }
 
     private void clearUserInfo() {

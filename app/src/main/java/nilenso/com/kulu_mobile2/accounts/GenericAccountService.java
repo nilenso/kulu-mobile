@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile.accounts;
+package nilenso.com.kulu_mobile2.accounts;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
@@ -13,7 +13,7 @@ import android.util.Log;
 
 public class GenericAccountService extends Service {
     private static final String TAG = "GenericAccountService";
-    public static final String ACCOUNT_TYPE = "nilenso.com.kulu_mobile.account";
+    public static final String ACCOUNT_TYPE = "nilenso.com.kulu_mobile2.account";
     public static final String ACCOUNT_NAME = "kulu";
     private Authenticator mAuthenticator;
 

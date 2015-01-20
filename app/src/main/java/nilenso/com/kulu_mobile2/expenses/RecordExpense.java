@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile.expenses;
+package nilenso.com.kulu_mobile2.expenses;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -18,9 +18,9 @@ import java.util.Date;
 import java.util.UUID;
 
 import io.realm.Realm;
-import nilenso.com.kulu_mobile.ExpenseEntry;
-import nilenso.com.kulu_mobile.MainActivity;
-import nilenso.com.kulu_mobile.R;
+import nilenso.com.kulu_mobile2.ExpenseEntry;
+import nilenso.com.kulu_mobile2.MainActivity;
+import nilenso.com.kulu_mobile2.R;
 
 
 public class RecordExpense extends FragmentActivity {

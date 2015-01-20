@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
-    android:contentAuthority="nilenso.com.kulu_mobile.sync.basicsyncadapter"
-    android:accountType="nilenso.com.kulu_mobile.account"
+    android:contentAuthority="nilenso.com.kulu_mobile2.sync.basicsyncadapter"
+    android:accountType="nilenso.com.kulu_mobile2.account"
     android:userVisible="false"
     android:supportsUploading="true"
     android:allowParallelSyncs="true"

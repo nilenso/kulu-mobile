@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile;
+package nilenso.com.kulu_mobile2;
 
 import android.app.Service;
 import android.content.Intent;

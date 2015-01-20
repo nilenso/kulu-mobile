@@ -88,8 +88,8 @@
     <orderEntry type="library" exported="" name="appcompat-v7-19.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.0" level="project" />
     <orderEntry type="library" exported="" name="android-saripaar-2.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="realm-0.77.0" level="project" />
     <orderEntry type="library" exported="" name="okio-1.0.1" level="project" />
-    <orderEntry type="library" exported="" name="realm-0.76.0" level="project" />
     <orderEntry type="library" exported="" name="floatingactionbutton-1.5.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-plus-6.5.87" level="project" />
     <orderEntry type="library" exported="" name="play-services-base-6.5.87" level="project" />

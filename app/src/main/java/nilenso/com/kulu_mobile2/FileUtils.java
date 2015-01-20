@@ -1,8 +1,6 @@
-package nilenso.com.kulu_mobile;
+package nilenso.com.kulu_mobile2;
 
 import org.apache.commons.io.FilenameUtils;
-
-import java.io.File;
 
 public class FileUtils {
     public static String getLastPartOfFile(String file) {
