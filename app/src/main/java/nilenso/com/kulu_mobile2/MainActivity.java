@@ -94,7 +94,11 @@ public class MainActivity extends ActionBarActivity {
 
         try {
             Realm realm = Realm.getInstance(this);
-            expenses = realm.where(ExpenseEntry.class).equalTo("deleted", false).findAllSorted("createdAt", RealmResults.SORT_ORDER_DESCENDING);
+            expenses = realm.where(ExpenseEntry.class)
+                    .equalTo("deleted", false)
+                    .equalTo("email", currentUserEmail())
+                    .findAllSorted("createdAt", RealmResults.SORT_ORDER_DESCENDING);
+
         } catch (RealmMigrationNeededException ex) {
             Realm.deleteRealmFile(this);
             Realm realm = Realm.getInstance(this);
@@ -164,6 +168,7 @@ public class MainActivity extends ActionBarActivity {
         public void onReceive(final Context context, Intent intent) {
             Bundle extra = intent.getExtras();
             String expenseEntry = extra.getString(SyncService.FILEUPLOADED_EXTRA);
+            updateView();
             Toast.makeText(context,
                     "Upload finished for " + expenseEntry, Toast.LENGTH_SHORT).show();
 
@@ -302,4 +307,8 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
+    private String currentUserEmail() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPref.getString(SplashScreen.ACCOUNT_NAME, "");
+    }
 }

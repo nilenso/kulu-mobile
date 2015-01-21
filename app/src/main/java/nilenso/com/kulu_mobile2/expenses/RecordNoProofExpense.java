@@ -84,6 +84,8 @@ public class RecordNoProofExpense extends RecordExpense {
         expenseEntry.setAmount(getAmount());
         expenseEntry.setMerchantName(getMerchantName());
         expenseEntry.setExpenseDate(getExpenseDate());
+        createUserIfMissing(realm);
+        expenseEntry.setEmail(currentUserEmail());
         realm.commitTransaction();
     }
 

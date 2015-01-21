@@ -1,7 +1,13 @@
 package nilenso.com.kulu_mobile2;
 
-import java.util.Date;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
+import java.util.Date;
+import java.util.HashMap;
+
+import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 
@@ -19,6 +25,7 @@ public class ExpenseEntry extends RealmObject {
 
     @Index
     private String id;
+    private String email;
 
 
     public String getComments() {
@@ -86,5 +93,10 @@ public class ExpenseEntry extends RealmObject {
     public String getCurrency() { return currency; }
 
     public void setCurrency(String currency) { this.currency = currency; }
+
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) { this.email = email; }
+
 
 }

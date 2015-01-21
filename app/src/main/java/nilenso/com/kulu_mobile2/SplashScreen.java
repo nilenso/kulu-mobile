@@ -20,8 +20,8 @@ public class SplashScreen extends Activity implements
         GooglePlayServicesClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
     private static final int RC_SIGN_IN = 0;
-    static final String ACCOUNT_NAME = "AccountName";
-    static final String DISPLAY_NAME = "DisplayName";
+    public static final String ACCOUNT_NAME = "AccountName";
+    public static final String DISPLAY_NAME = "DisplayName";
     static final String LOGGED_IN = "LoggedIn";
     static final String SIGN_OUT = "SignOut";
 

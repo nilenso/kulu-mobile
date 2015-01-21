@@ -8,10 +8,8 @@ import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -149,22 +147,14 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void uploadInvoice(String s3Location, ExpenseEntry result) throws IOException {
         KuluBackend backend = new KuluBackend();
-        backend.createInvoice(getContext().getString(R.string.kulu_backend_service_url), s3Location, result, getUserInfo());
+        backend.createInvoice(getContext().getString(R.string.kulu_backend_service_url), s3Location, result, getUserInfo(getContext(), result));
     }
 
     private void uploadNoProofInvoice(ExpenseEntry result) throws IOException {
         KuluBackend backend = new KuluBackend();
-        backend.createNoProofInvoice(getContext().getString(R.string.kulu_backend_service_url), result, getUserInfo());
+        backend.createNoProofInvoice(getContext().getString(R.string.kulu_backend_service_url), result, getUserInfo(getContext(), result));
     }
 
-    private HashMap<String, String> getUserInfo() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());;
-        HashMap<String, String> userInfo = new HashMap<String, String>();
-
-        userInfo.put(SplashScreen.DISPLAY_NAME, sharedPref.getString(SplashScreen.DISPLAY_NAME, "stub"));
-        userInfo.put(SplashScreen.ACCOUNT_NAME, sharedPref.getString(SplashScreen.ACCOUNT_NAME, "stub"));
-        return userInfo;
-    }
 
     private void broadcastFinished(String s3Location, String fileUploaded) {
         Bundle b = new Bundle();
@@ -230,6 +220,18 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         if (expense != null) expense.setDeleted(true);
         realm.addChangeListener(MainActivity.syncListener);
         realm.commitTransaction();
+    }
+
+    public HashMap<String, String> getUserInfo(Context context, ExpenseEntry expense) {
+        HashMap<String, String> userInfo = new HashMap<String, String>();
+        Realm realm = Realm.getInstance(context);
+        User user = realm.where(User.class).equalTo("email", expense.getEmail()).findFirst();
+        if (user == null) return userInfo;
+        Log.e(TAG, user.getEmail());
+        Log.e(TAG, user.getDisplayName());
+        userInfo.put(SplashScreen.DISPLAY_NAME, user.getDisplayName());
+        userInfo.put(SplashScreen.ACCOUNT_NAME, user.getEmail());
+        return userInfo;
     }
 }
 

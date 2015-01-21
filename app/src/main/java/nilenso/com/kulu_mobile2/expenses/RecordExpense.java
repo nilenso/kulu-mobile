@@ -1,6 +1,8 @@
 package nilenso.com.kulu_mobile2.expenses;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +23,8 @@ import io.realm.Realm;
 import nilenso.com.kulu_mobile2.ExpenseEntry;
 import nilenso.com.kulu_mobile2.MainActivity;
 import nilenso.com.kulu_mobile2.R;
+import nilenso.com.kulu_mobile2.SplashScreen;
+import nilenso.com.kulu_mobile2.User;
 
 
 public class RecordExpense extends FragmentActivity {
@@ -115,7 +119,21 @@ public class RecordExpense extends FragmentActivity {
         expenseEntry.setInvoicePath(invoiceLocation);
         expenseEntry.setCreatedAt(new Date());
         expenseEntry.setId(UUID.randomUUID().toString());
+        createUserIfMissing(realm);
+        expenseEntry.setEmail(currentUserEmail());
         realm.commitTransaction();
+    }
+
+    protected void createUserIfMissing(Realm realm) {
+        User user = realm.where(User.class).equalTo("email", currentUserEmail()).findFirst();
+        if (isNull(user)) {
+            user = realm.createObject(User.class);
+            user.setCurrentUserInfo(currentUserEmail(), currentUserDisplayName());
+        }
+    }
+
+    private boolean isNull(User user) {
+        return user == null;
     }
 
     protected String getFileNameFromUri(String invoiceLocation) {
@@ -139,4 +157,15 @@ public class RecordExpense extends FragmentActivity {
                 return "";
         }
     }
+
+    protected String currentUserEmail() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPref.getString(SplashScreen.ACCOUNT_NAME, "");
+    }
+
+    private String currentUserDisplayName() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPref.getString(SplashScreen.DISPLAY_NAME, "");
+    }
+
 }
