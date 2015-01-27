@@ -168,26 +168,13 @@ public class MainActivity extends ActionBarActivity {
         public void onReceive(final Context context, Intent intent) {
             Bundle extra = intent.getExtras();
             String expenseEntry = extra.getString(SyncService.FILEUPLOADED_EXTRA);
-            updateView();
+            deleteUploadedExpense(expenseEntry);
             Toast.makeText(context,
                     "Upload finished for " + expenseEntry, Toast.LENGTH_SHORT).show();
 
             invoiceListAdapter.notifyDataSetChanged();
         }
     };
-
-    private void deleteUploadedExpense(String expenseEntry) {
-        Realm realm = Realm.getInstance(this);
-        realm.removeAllChangeListeners();
-        realm.beginTransaction();
-        ExpenseEntry expense = realm.where(ExpenseEntry.class)
-                .equalTo("id", expenseEntry)
-                .findFirst();
-        if (expense != null) expense.setDeleted(true);
-        realm.commitTransaction();
-        realm.addChangeListener(syncListener);
-        realm.close();
-    }
 
     private Uri mCurrentPhotoPath = null;
 
@@ -310,5 +297,18 @@ public class MainActivity extends ActionBarActivity {
     private String currentUserEmail() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         return sharedPref.getString(SplashScreen.ACCOUNT_NAME, "");
+    }
+
+    private void deleteUploadedExpense(String expenseEntry) {
+        Realm realm = Realm.getInstance(this);
+        realm.refresh();
+        realm.beginTransaction();
+        realm.removeAllChangeListeners();
+        ExpenseEntry expense = realm.where(ExpenseEntry.class)
+                .equalTo("id", expenseEntry)
+                .findFirst();
+        if (expense != null) expense.setDeleted(true);
+        realm.addChangeListener(MainActivity.syncListener);
+        realm.commitTransaction();
     }
 }
