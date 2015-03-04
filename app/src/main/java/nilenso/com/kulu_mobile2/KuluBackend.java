@@ -33,7 +33,7 @@ public class KuluBackend {
         client = new OkHttpClient();
     }
 
-    public String createInvoice(String url, String s3Location, ExpenseEntry expense, HashMap<String, String> userInfo) throws IOException {
+    public String createInvoice(String url, String s3Location, ExpenseEntry expense, HashMap<String, String> userInfo, String token) throws IOException {
         Map<String, Map<String, Object>> requestMap = new HashMap<String, Map<String, Object>>();
         Map<String, Object> subRequestMap = new HashMap<String, Object>();
         subRequestMap.put(idKey, expense.getId());
@@ -47,10 +47,10 @@ public class KuluBackend {
         requestMap.put(invoice, subRequestMap);
 
 
-        return makeRequest(url, requestMap);
+        return makeRequest(url, requestMap, token);
     }
 
-    public String createNoProofInvoice(String url, ExpenseEntry expense, HashMap<String, String> userInfo) throws IOException {
+    public String createNoProofInvoice(String url, ExpenseEntry expense, HashMap<String, String> userInfo, String token) throws IOException {
         Map<String, Map<String, Object>> requestMap = new HashMap<String, Map<String, Object>>();
         Map<String, Object> subRequestMap = new HashMap<String, Object>();
         subRequestMap.put(idKey, expense.getId());
@@ -65,7 +65,7 @@ public class KuluBackend {
 
         requestMap.put(invoice, subRequestMap);
 
-        return makeRequest(url, requestMap);
+        return makeRequest(url, requestMap, token);
     }
 
     private String getDate(ExpenseEntry expense) {
@@ -76,11 +76,12 @@ public class KuluBackend {
         return new DateTime(expense.getExpenseDate()).toString("yyyy-MM-dd");
     }
 
-    private String makeRequest(String url, Map<String, Map<String, Object>> requestMap) throws IOException {
+    private String makeRequest(String url, Map<String, Map<String, Object>> requestMap, String token) throws IOException {
         JSONObject json = new JSONObject(requestMap);
 
         RequestBody body = RequestBody.create(JSON, json.toString());
         Request request = new Request.Builder()
+                .header("X-Auth-Token", token)
                 .url(url)
                 .post(body)
                 .build();

@@ -147,12 +147,12 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void uploadInvoice(String s3Location, ExpenseEntry result) throws IOException {
         KuluBackend backend = new KuluBackend();
-        backend.createInvoice(getContext().getString(R.string.kulu_backend_service_url), s3Location, result, getUserInfo(getContext(), result));
+        backend.createInvoice(getContext().getString(R.string.kulu_backend_service_url), s3Location, result, getUserInfo(getContext(), result), getContext().getString(R.string.kulu_backend_service_token));
     }
 
     private void uploadNoProofInvoice(ExpenseEntry result) throws IOException {
         KuluBackend backend = new KuluBackend();
-        backend.createNoProofInvoice(getContext().getString(R.string.kulu_backend_service_url), result, getUserInfo(getContext(), result));
+        backend.createNoProofInvoice(getContext().getString(R.string.kulu_backend_service_url), result, getUserInfo(getContext(), result), getContext().getString(R.string.kulu_backend_service_token));
     }
 
 
