@@ -9,7 +9,7 @@
     <string name="kulu_s3_access_key_id">AKIAJHEFWQGZPG3ZWTMA</string>
     <string name="kulu_s3_secret_access_key">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</string>
     <string name="kulu_backend_service_url">https://kulu-backend-staging.herokuapp.com/invoices</string>
-    <string name="kulu_backend_service_token">a44f873f-b214-4f87-b74f-1883e7b1560c</string>
+    <string name="kulu_backend_login_url">https://kulu-backend-staging.herokuapp.com/login</string>
     <string name="title_activity_record_expense"></string>
     <string name="hello_world">Hello world!</string>
     <string name="merchant_hint">Merchant Name</string>
@@ -27,5 +27,9 @@
     <string name="petty_expense">No Proof</string>
     <string name="camera_expense">Take Photo</string>
     <string name="pick_date">Pick Date</string>
+    <string name="login">Login</string>
+    <string name="login_password">Password</string>
+    <string name="login_email">Email</string>
+    <string name="sign_in_button">Sign in</string>
 
 </resources>

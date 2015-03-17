@@ -42,7 +42,6 @@ public class KuluBackend {
         subRequestMap.put(expenseTypeKey, expense.getExpenseType());
         subRequestMap.put(dateKey, getDate(expense));
         subRequestMap.put(emailKey, userInfo.get(SplashScreen.ACCOUNT_NAME));
-        subRequestMap.put(userNameKey, userInfo.get(SplashScreen.DISPLAY_NAME));
 
         requestMap.put(invoice, subRequestMap);
 
@@ -61,7 +60,6 @@ public class KuluBackend {
         subRequestMap.put(amountKey , expense.getAmount());
         subRequestMap.put(currencyKey , expense.getCurrency());
         subRequestMap.put(emailKey, userInfo.get(SplashScreen.ACCOUNT_NAME));
-        subRequestMap.put(userNameKey, userInfo.get(SplashScreen.DISPLAY_NAME));
 
         requestMap.put(invoice, subRequestMap);
 

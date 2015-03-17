@@ -29,9 +29,8 @@ public class User extends RealmObject {
         this.displayName = displayName;
     }
 
-    public void setCurrentUserInfo(String email, String displayName) {
+    public void setCurrentUserInfo(String email) {
         setEmail(email);
-        setDisplayName(displayName);
     }
 
 }

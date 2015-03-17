@@ -128,7 +128,7 @@ public class RecordExpense extends FragmentActivity {
         User user = realm.where(User.class).equalTo("email", currentUserEmail()).findFirst();
         if (isNull(user)) {
             user = realm.createObject(User.class);
-            user.setCurrentUserInfo(currentUserEmail(), currentUserDisplayName());
+            user.setCurrentUserInfo(currentUserEmail());
         }
     }
 
@@ -162,10 +162,4 @@ public class RecordExpense extends FragmentActivity {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         return sharedPref.getString(SplashScreen.ACCOUNT_NAME, "");
     }
-
-    private String currentUserDisplayName() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        return sharedPref.getString(SplashScreen.DISPLAY_NAME, "");
-    }
-
 }

@@ -8,8 +8,10 @@ import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -147,12 +149,14 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void uploadInvoice(String s3Location, ExpenseEntry result) throws IOException {
         KuluBackend backend = new KuluBackend();
-        backend.createInvoice(getContext().getString(R.string.kulu_backend_service_url), s3Location, result, getUserInfo(getContext(), result), getContext().getString(R.string.kulu_backend_service_token));
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        backend.createInvoice(getContext().getString(R.string.kulu_backend_service_url), s3Location, result, getUserInfo(getContext(), result), sharedPref.getString(SplashScreen.TOKEN, ""));
     }
 
     private void uploadNoProofInvoice(ExpenseEntry result) throws IOException {
         KuluBackend backend = new KuluBackend();
-        backend.createNoProofInvoice(getContext().getString(R.string.kulu_backend_service_url), result, getUserInfo(getContext(), result), getContext().getString(R.string.kulu_backend_service_token));
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        backend.createNoProofInvoice(getContext().getString(R.string.kulu_backend_service_url), result, getUserInfo(getContext(), result), sharedPref.getString(SplashScreen.TOKEN, ""));
     }
 
 
@@ -229,7 +233,6 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         if (user == null) return userInfo;
         Log.e(TAG, user.getEmail());
         Log.e(TAG, user.getDisplayName());
-        userInfo.put(SplashScreen.DISPLAY_NAME, user.getDisplayName());
         userInfo.put(SplashScreen.ACCOUNT_NAME, user.getEmail());
         return userInfo;
     }

@@ -4,21 +4,42 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <com.google.android.gms.common.SignInButton
+    <Button
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="130dp"
-        android:layout_below="@+id/imageView"
-        android:layout_marginTop="60dp" />
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/sign_in_button" />
 
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/loginEmail"
+        android:hint="@string/login_email"
+        android:layout_above="@+id/loginPassword"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-    <ImageView
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:hint="@string/login_password"
+        android:ems="10"
+        android:id="@+id/loginPassword"
+        android:layout_above="@+id/sign_in_button"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentEnd="false" />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:background="@drawable/ic_launcher_720"
-        android:layout_marginTop="86dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="85dp" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/login"
+        android:id="@+id/loginText"
+        android:layout_above="@+id/loginEmail"
+        android:layout_centerHorizontal="true" />
+
+
 </RelativeLayout>
