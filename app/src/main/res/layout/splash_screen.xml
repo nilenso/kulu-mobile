@@ -4,42 +4,66 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/sign_in_button" />
+        android:id="@+id/kuluLogo"
+        android:src="@drawable/logo"
+        android:layout_marginBottom="50dp"
+        android:layout_above="@+id/loginOrgName"
+        android:layout_centerHorizontal="true" />
 
     <EditText
-        android:layout_width="fill_parent"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/loginOrgName"
+        android:inputType="text"
+        android:hint="@string/login_org_name"
+        android:layout_above="@+id/loginUserName"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/loginUserName"
+        android:inputType="text"
+        android:hint="@string/login_user_name"
+        android:layout_above="@+id/loginEmail"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:id="@+id/loginEmail"
+        android:inputType="textEmailAddress"
         android:hint="@string/login_email"
         android:layout_above="@+id/loginPassword"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_centerHorizontal="true" />
 
     <EditText
-        android:layout_width="fill_parent"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:hint="@string/login_password"
         android:ems="10"
         android:id="@+id/loginPassword"
+        android:layout_marginBottom="52dp"
         android:layout_above="@+id/sign_in_button"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentEnd="false" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/login"
-        android:id="@+id/loginText"
-        android:layout_above="@+id/loginEmail"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        android:id="@+id/sign_in_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_button"
+        android:background="@drawable/login_button"
+        android:textColor="@color/white"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

@@ -27,14 +27,16 @@ public class KuluBackend {
     private final String currencyKey = "currency";
     private final String invoice = "invoice";
     private final String emailKey = "email";
-    private final String userNameKey = "user_name";
+    private final String organizationNameKey = "organization_name";
+    private String organizationName;
 
-    public KuluBackend() {
+    public KuluBackend(String orgName) {
+        organizationName = orgName;
         client = new OkHttpClient();
     }
 
     public String createInvoice(String url, String s3Location, ExpenseEntry expense, HashMap<String, String> userInfo, String token) throws IOException {
-        Map<String, Map<String, Object>> requestMap = new HashMap<String, Map<String, Object>>();
+        Map<String, Object> requestMap = new HashMap<String, Object>();
         Map<String, Object> subRequestMap = new HashMap<String, Object>();
         subRequestMap.put(idKey, expense.getId());
         subRequestMap.put(requestKey, FileUtils.getLastPartOfFile(s3Location));
@@ -45,12 +47,11 @@ public class KuluBackend {
 
         requestMap.put(invoice, subRequestMap);
 
-
         return makeRequest(url, requestMap, token);
     }
 
     public String createNoProofInvoice(String url, ExpenseEntry expense, HashMap<String, String> userInfo, String token) throws IOException {
-        Map<String, Map<String, Object>> requestMap = new HashMap<String, Map<String, Object>>();
+        Map<String, Object> requestMap = new HashMap<String, Object>();
         Map<String, Object> subRequestMap = new HashMap<String, Object>();
         subRequestMap.put(idKey, expense.getId());
         subRequestMap.put(remarksKey, expense.getComments());
@@ -62,6 +63,7 @@ public class KuluBackend {
         subRequestMap.put(emailKey, userInfo.get(SplashScreen.ACCOUNT_NAME));
 
         requestMap.put(invoice, subRequestMap);
+        requestMap.put(organizationNameKey, organizationName);
 
         return makeRequest(url, requestMap, token);
     }
@@ -74,7 +76,7 @@ public class KuluBackend {
         return new DateTime(expense.getExpenseDate()).toString("yyyy-MM-dd");
     }
 
-    private String makeRequest(String url, Map<String, Map<String, Object>> requestMap, String token) throws IOException {
+    private String makeRequest(String url, Map<String, Object> requestMap, String token) throws IOException {
         JSONObject json = new JSONObject(requestMap);
 
         RequestBody body = RequestBody.create(JSON, json.toString());

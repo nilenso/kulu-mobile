@@ -148,14 +148,14 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void uploadInvoice(String s3Location, ExpenseEntry result) throws IOException {
-        KuluBackend backend = new KuluBackend();
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        KuluBackend backend = new KuluBackend(sharedPref.getString(SplashScreen.TEAM_NAME, ""));
         backend.createInvoice(getContext().getString(R.string.kulu_backend_service_url), s3Location, result, getUserInfo(getContext(), result), sharedPref.getString(SplashScreen.TOKEN, ""));
     }
 
     private void uploadNoProofInvoice(ExpenseEntry result) throws IOException {
-        KuluBackend backend = new KuluBackend();
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        KuluBackend backend = new KuluBackend(sharedPref.getString(SplashScreen.TEAM_NAME, ""));
         backend.createNoProofInvoice(getContext().getString(R.string.kulu_backend_service_url), result, getUserInfo(getContext(), result), sharedPref.getString(SplashScreen.TOKEN, ""));
     }
 

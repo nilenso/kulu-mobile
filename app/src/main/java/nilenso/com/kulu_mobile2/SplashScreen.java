@@ -9,9 +9,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.Toast;
-
 
 import org.json.JSONException;
 
@@ -20,6 +21,7 @@ import java.io.IOException;
 public class SplashScreen extends Activity {
 
     private static final int RC_SIGN_IN = 0;
+    public static final String TEAM_NAME = "TeamName";
     public static final String ACCOUNT_NAME = "AccountName";
     public static final String TOKEN = "token";
     static final String LOGGED_IN = "LoggedIn";
@@ -43,10 +45,13 @@ public class SplashScreen extends Activity {
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pd=ProgressDialog.show(SplashScreen.this,"","Please Wait",false);
+                pd = ProgressDialog.show(SplashScreen.this, "" , "Please Wait", false);
                 new LoginTask().execute();
             }
         });
+
+        final Animation animationFadeIn = AnimationUtils.loadAnimation(this, R.anim.fadein);
+        findViewById(R.id.kuluLogo).startAnimation(animationFadeIn);
     }
 
     private boolean isSigningOut() {
@@ -55,15 +60,14 @@ public class SplashScreen extends Activity {
         return getIntent().getExtras().getString(SIGN_OUT).equals("true");
     }
 
-
     public void signOut() {
         clearUserInfo();
     }
 
-
-    private void saveUserInfo(String email, String token) {
+    private void saveUserInfo(String teamName, String email, String token) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(TEAM_NAME, teamName);
         editor.putString(ACCOUNT_NAME, email);
         editor.putString(TOKEN, token);
         editor.putString(LOGGED_IN, "true");
@@ -100,10 +104,12 @@ public class SplashScreen extends Activity {
     private class LoginTask extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void...params) {
+            String orgName = ((EditText) findViewById(R.id.loginOrgName)).getText().toString();
+            String userName = ((EditText) findViewById(R.id.loginUserName)).getText().toString();
             String email = ((EditText) findViewById(R.id.loginEmail)).getText().toString();
             String password = ((EditText) findViewById(R.id.loginPassword)).getText().toString();
             try {
-                return new LoginClient().login(getString(R.string.kulu_backend_login_url), email, password);
+                return new LoginClient().login(getString(R.string.kulu_backend_login_url), orgName, userName, email, password);
             } catch (IOException e) {
                 return ERROR;
             } catch (JSONException e) {
@@ -116,8 +122,9 @@ public class SplashScreen extends Activity {
                 pd.dismiss();
                 Toast.makeText(getBaseContext(), "Issue with logging in", Toast.LENGTH_SHORT).show();
             } else {
+                String teamName = ((EditText) findViewById(R.id.loginOrgName)).getText().toString();
                 String email = ((EditText) findViewById(R.id.loginEmail)).getText().toString();
-                saveUserInfo(email, result);
+                saveUserInfo(teamName, email, result);
                 pd.dismiss();
                 startMainActivity();
             }
