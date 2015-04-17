@@ -8,16 +8,16 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
 import io.realm.Realm;
-
-import com.mobsandgeeks.saripaar.Validator;
-import com.mobsandgeeks.saripaar.annotation.NotEmpty;
-
 import nilenso.com.kulu_mobile2.ExpenseEntry;
 import nilenso.com.kulu_mobile2.R;
 import nilenso.com.kulu_mobile2.fragments.DatePickerFragment;
@@ -95,9 +95,9 @@ public class RecordNoProofExpense extends RecordExpense {
         return formatter.parse(datePicker.getText().toString());
     }
 
-    private int getAmount() {
+    private float getAmount() {
         String value = amount.getText().toString();
-        return Integer.valueOf(value);
+        return (new BigDecimal(value)).floatValue();
     }
 
     public String getMerchantName() {

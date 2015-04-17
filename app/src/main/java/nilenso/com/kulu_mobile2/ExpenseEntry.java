@@ -1,13 +1,7 @@
 package nilenso.com.kulu_mobile2;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
 import java.util.Date;
-import java.util.HashMap;
 
-import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 
@@ -18,7 +12,7 @@ public class ExpenseEntry extends RealmObject {
     private boolean deleted;
     private String invoice;
     private String merchantName;
-    private int amount;
+    private float amount;
     private String currency;
     private Date expenseDate;
     private Date createdAt;
@@ -86,9 +80,9 @@ public class ExpenseEntry extends RealmObject {
 
     public void setMerchantName(String merchantName) { this.merchantName = merchantName; }
 
-    public int getAmount() { return amount; }
+    public float getAmount() { return amount; }
 
-    public void setAmount(int amount) { this.amount = amount; }
+    public void setAmount(float amount) { this.amount = amount; }
 
     public String getCurrency() { return currency; }
 
@@ -97,6 +91,4 @@ public class ExpenseEntry extends RealmObject {
     public String getEmail() { return email; }
 
     public void setEmail(String email) { this.email = email; }
-
-
 }
