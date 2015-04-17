@@ -1,6 +1,8 @@
 package nilenso.com.kulu_mobile2;
 
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -46,6 +48,7 @@ public class KuluBackend {
         subRequestMap.put(emailKey, userInfo.get(SplashScreen.ACCOUNT_NAME));
 
         requestMap.put(invoice, subRequestMap);
+        requestMap.put(organizationNameKey, organizationName);
 
         return makeRequest(url, requestMap, token);
     }
