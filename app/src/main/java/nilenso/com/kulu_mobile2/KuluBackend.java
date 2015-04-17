@@ -1,6 +1,7 @@
 package nilenso.com.kulu_mobile2;
 
 
+import com.google.gson.Gson;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -8,7 +9,6 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import org.joda.time.DateTime;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -77,9 +77,10 @@ public class KuluBackend {
     }
 
     private String makeRequest(String url, Map<String, Object> requestMap, String token) throws IOException {
-        JSONObject json = new JSONObject(requestMap);
+        Gson gson = new Gson();
+        String json = gson.toJson(requestMap);
 
-        RequestBody body = RequestBody.create(JSON, json.toString());
+        RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .header("X-Auth-Token", token)
                 .url(url)

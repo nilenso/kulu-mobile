@@ -1,6 +1,7 @@
 package nilenso.com.kulu_mobile2;
 
 
+import com.google.gson.Gson;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -29,7 +30,7 @@ public class LoginClient {
     }
 
     public String login(String url, String orgName, String userName, String email, String password) throws IOException, JSONException {
-        Map<String, Map<String, Object>> requestMap = new HashMap<String, Map<String, Object>>();
+        Map<String, Object> requestMap = new HashMap();
         Map<String, Object> subRequestMap = new HashMap();
 
         subRequestMap.put(organizationNameKey, orgName);
@@ -43,10 +44,11 @@ public class LoginClient {
     }
 
 
-    private String makeRequest(String url, Map<String, Map<String, Object>> requestMap) throws IOException, JSONException {
-        JSONObject json = new JSONObject(requestMap);
+    private String makeRequest(String url, Map<String, Object> requestMap) throws IOException, JSONException {
+        Gson gson = new Gson();
+        String json = gson.toJson(requestMap);
 
-        RequestBody body = RequestBody.create(JSON, json.toString());
+        RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
@@ -54,8 +56,7 @@ public class LoginClient {
         Response response = client.newCall(request).execute();
 
         if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-        json = new JSONObject(response.body().string());
-        return json.getString("token");
+        return new JSONObject(response.body().string()).getString("token");
     }
 
 }
