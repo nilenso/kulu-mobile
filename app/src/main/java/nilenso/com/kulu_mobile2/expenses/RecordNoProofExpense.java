@@ -52,7 +52,7 @@ public class RecordNoProofExpense extends RecordExpense {
         spinner.setAdapter(adapter);
     }
 
-    private  void setupDatePicker() {
+    private void setupDatePicker() {
         SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, yyyy");
         ((TextView) findViewById(R.id.datePicker)).setText(formatter.format(new Date()));
         ((TextView) findViewById(R.id.datePicker)).setOnClickListener(new View.OnClickListener() {

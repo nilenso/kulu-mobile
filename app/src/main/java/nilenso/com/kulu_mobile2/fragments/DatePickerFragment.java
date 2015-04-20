@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -17,7 +17,7 @@ import nilenso.com.kulu_mobile2.R;
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
 
-    private static final DateFormat DATE_FORMATTER = DateFormat.getDateInstance();
+    private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MMMM dd, yyyy");
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -36,6 +36,7 @@ public class DatePickerFragment extends DialogFragment
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
         Calendar cal = new GregorianCalendar(year, month, day);
+        DATE_FORMATTER.setTimeZone(cal.getTimeZone());
         TextView datePicker = (TextView) getActivity().findViewById(R.id.datePicker);
         datePicker.setText(DATE_FORMATTER.format(cal.getTime()));
     }
