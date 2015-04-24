@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 import io.realm.Realm;
@@ -53,7 +54,7 @@ public class RecordNoProofExpense extends RecordExpense {
     }
 
     private void setupDatePicker() {
-        SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
         ((TextView) findViewById(R.id.datePicker)).setText(formatter.format(new Date()));
         ((TextView) findViewById(R.id.datePicker)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,7 +92,7 @@ public class RecordNoProofExpense extends RecordExpense {
 
     private Date getExpenseDate() throws ParseException {
         TextView datePicker = (TextView) findViewById(R.id.datePicker);
-        SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
         return formatter.parse(datePicker.getText().toString());
     }
 
