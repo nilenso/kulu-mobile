@@ -105,11 +105,10 @@ public class SplashScreen extends Activity {
         @Override
         protected String doInBackground(Void...params) {
             String orgName = ((EditText) findViewById(R.id.loginOrgName)).getText().toString();
-            String userName = ((EditText) findViewById(R.id.loginUserName)).getText().toString();
             String email = ((EditText) findViewById(R.id.loginEmail)).getText().toString();
             String password = ((EditText) findViewById(R.id.loginPassword)).getText().toString();
             try {
-                return new LoginClient().login(getString(R.string.kulu_backend_login_url), orgName, userName, email, password);
+                return new LoginClient().login(getString(R.string.kulu_backend_login_url), orgName, email, password);
             } catch (IOException e) {
                 return ERROR;
             } catch (JSONException e) {

@@ -20,7 +20,6 @@ public class LoginClient {
     private OkHttpClient client;
     private final String organizationNameKey = "team_name";
     private final String emailKey = "user_email";
-    private final String userNameKey = "user_name";
     private final String passwordKey = "password";
     private final String credsKey = "creds";
 
@@ -29,13 +28,12 @@ public class LoginClient {
         client = new OkHttpClient();
     }
 
-    public String login(String url, String orgName, String userName, String email, String password) throws IOException, JSONException {
+    public String login(String url, String orgName, String email, String password) throws IOException, JSONException {
         Map<String, Object> requestMap = new HashMap();
         Map<String, Object> subRequestMap = new HashMap();
 
         subRequestMap.put(organizationNameKey, orgName);
         subRequestMap.put(emailKey, email);
-        subRequestMap.put(userNameKey, userName);
         subRequestMap.put(passwordKey, password);
 
         requestMap.put(credsKey, subRequestMap);
