@@ -187,6 +187,11 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         builder.setAutoCancel(true);
         builder.setSmallIcon(R.drawable.ic_launcher);
         builder.setOngoing(true);
+
+        if (progress == -1) {
+            builder.setOngoing(false);
+        }
+
         builder.setProgress(100, progress, false);
         builder.setStyle(new Notification.BigTextStyle().bigText(msg));
         Intent notificationIntent = new Intent(getContext(), MainActivity.class);

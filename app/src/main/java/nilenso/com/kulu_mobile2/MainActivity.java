@@ -170,7 +170,7 @@ public class MainActivity extends ActionBarActivity {
             String expenseEntry = extra.getString(SyncService.FILEUPLOADED_EXTRA);
             deleteUploadedExpense(expenseEntry);
             Toast.makeText(context,
-                    "Upload finished for " + expenseEntry, Toast.LENGTH_SHORT).show();
+                    "Expense uploaded", Toast.LENGTH_SHORT).show();
 
             invoiceListAdapter.notifyDataSetChanged();
         }
@@ -186,14 +186,14 @@ public class MainActivity extends ActionBarActivity {
                 addExpense(mCurrentPhotoPath);
 
                 Toast.makeText(getApplicationContext(),
-                        "New image added.", Toast.LENGTH_SHORT).show();
+                        "New image added", Toast.LENGTH_SHORT).show();
 
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(getApplicationContext(),
-                        "No new image was added.", Toast.LENGTH_SHORT).show();
+                        "No new image was added", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getApplicationContext(),
-                        "Failed to capture image.", Toast.LENGTH_SHORT).show();
+                        "Failed to capture image", Toast.LENGTH_SHORT).show();
             }
         }
 
