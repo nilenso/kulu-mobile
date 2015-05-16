@@ -133,6 +133,15 @@ public class MainActivity extends ActionBarActivity {
         return GenericAccountService.GetAccount();
     }
 
+    private void removeAutoSync(Account currentAccount) {
+        try {
+            ContentResolver.setSyncAutomatically(currentAccount, AUTHORITY, false);
+            ContentResolver.removePeriodicSync(currentAccount, AUTHORITY, Bundle.EMPTY);
+        } catch (Exception e) {
+            Log.w("Removing Auto Sync", e.toString());
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -284,6 +293,7 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent(this, SplashScreen.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(SplashScreen.SIGN_OUT, "true");
+        removeAutoSync(mAccount);
         startActivity(intent);
     }
 
