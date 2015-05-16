@@ -1,158 +1,122 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="nilenso.com.kulu_mobile2.expenses.RecordNoProofExpense"
-    >
+    tools:context="nilenso.com.kulu_mobile2.expenses.RecordNoProofExpense">
 
     <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/save"
         android:id="@+id/save"
-        android:enabled="true"
-        android:clickable="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="saveExpense"/>
-
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:imeOptions="actionDone"
-        android:singleLine="true"
-        android:id="@+id/editComments"
-        android:hint="@string/expense_comment"
-        android:inputType="textCapSentences|textAutoCorrect"
-        android:layout_below="@+id/expense_type"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="5dp" />
+        android:background="@drawable/login_button"
+        android:clickable="true"
+        android:enabled="true"
+        android:onClick="saveExpense"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="@string/save"
+        android:textColor="@color/white" />
 
-    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id = '@+id/expense_type'
-        android:layout_below="@+id/textView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="10dp">
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/company"
-        android:id="@+id/company"
-        android:checked="true"
-        android:layout_below="@+id/personal"
-        android:layout_centerHorizontal="true"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="60dp" />
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/personal"
-        android:id="@+id/personal"
-        android:layout_below="@+id/expense_type"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/company"
-        android:layout_toStartOf="@+id/company"
-        android:layout_marginLeft="10dp" />
-    </RadioGroup>
-
-
-    <Spinner
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/paidFor"
-        android:spinnerMode="dropdown"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/paidFor"
-        android:textSize="24sp"
-        android:id="@+id/textView"
-        android:typeface="sans"
-        android:textStyle="normal"
-        android:layout_below="@+id/paidFor"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="5dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/paidBy"
-        android:textSize="24sp"
-        android:id="@+id/textView2"
-        android:textStyle="normal"
-        android:typeface="normal"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_above="@+id/paidFor"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="5dp" />
-
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textCapSentences|textAutoCorrect"
-        android:hint="Merchant Name"
-        android:ems="10"
-        android:id="@+id/merchantName"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="10dp" />
-
-    <Spinner
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/currency"
-        android:layout_below="@+id/merchantName"
-        android:padding="2dip"
-        android:spinnerMode="dropdown"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"
-        android:layout_alignRight="@+id/textView2"
-        android:layout_alignEnd="@+id/textView2" />
-
-    <EditText
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:id="@+id/amount"
-        android:hint="@string/expense_amount"
-        android:layout_alignBottom="@+id/currency"
-        android:layout_toRightOf="@+id/textView"
-        android:layout_toEndOf="@+id/textView"
-        android:layout_marginTop="10dp" />
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
 
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:inputType="none"
-        android:focusable="false"
-        android:ems="10"
-        android:id="@+id/datePicker"
-        android:hint="@string/expense_date"
-        android:onClick="sh"
-        android:layout_above="@+id/textView2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="10dp" />
+        <EditText
+            android:id="@+id/editComments"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/expense_type"
+            android:ems="10"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:hint="@string/expense_comment"
+            android:imeOptions="actionDone"
+            android:inputType="text|textAutoCorrect"
+            android:singleLine="true" />
 
 
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id='@+id/expense_type'
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/datePicker"
+            android:layout_marginBottom="40dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/company"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:checked="true"
+                android:text="@string/company" />
+
+            <RadioButton
+                android:id="@+id/reimbursement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reimbursement" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/merchantName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="40dp"
+            android:ems="10"
+            android:hint="@string/merchant_name"
+            android:inputType="textCapSentences|textAutoCorrect" />
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/tableLayout1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:layout_below="@id/merchantName">
+
+            <Spinner
+                android:id="@+id/currency"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:spinnerMode="dropdown" />
+
+            <EditText
+                android:id="@+id/amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/currency"
+                android:hint="@string/expense_amount"
+                android:inputType="numberDecimal" />
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/datePicker"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tableLayout1"
+            android:layout_marginBottom="40dp"
+            android:ems="10"
+            android:focusable="false"
+            android:hint="@string/expense_date" />
+    </RelativeLayout>
 </RelativeLayout>

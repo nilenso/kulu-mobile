@@ -21,9 +21,7 @@
 
     <string name="reimbursement">Reimbursement</string>
     <string name="company">Company</string>
-    <string name="personal">Self</string>
-    <string name="paidFor">Paid for</string>
-    <string name="paidBy">Paid by</string>
+    <string name="expense_type">Expense Type</string>
     <string name="petty_expense">No Proof</string>
     <string name="camera_expense">Take Photo</string>
     <string name="pick_date">Pick Date</string>
@@ -33,5 +31,6 @@
     <string name="login_email">Email</string>
     <string name="login_user_name">Name</string>
     <string name="login_button">Log In</string>
+    <string name="merchant_name">Merchant Name</string>
 
 </resources>

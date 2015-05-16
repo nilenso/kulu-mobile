@@ -37,7 +37,6 @@ public class RecordNoProofExpense extends RecordExpense {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_no_proof_expense);
-        super.setupSpinner();
         setupDatePicker();
         setupCurrencyPicker();
 

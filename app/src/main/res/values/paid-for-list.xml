@@ -2,6 +2,6 @@
 <resources>
     <string-array name="paid_for_array">
         <item>Company</item>
-        <item>Self</item>
+        <item>Reimbursement</item>
     </string-array>
 </resources>
