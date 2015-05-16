@@ -3,5 +3,10 @@
     <string-array name="currency_array">
         <item>INR</item>
         <item>USD</item>
+        <item>EUR</item>
+        <item>SGD</item>
+        <item>IDR</item>
+        <item>GBP</item>
+        <item>CAD</item>
     </string-array>
 </resources>
