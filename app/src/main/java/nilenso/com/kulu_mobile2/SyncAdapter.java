@@ -45,8 +45,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
      * Content resolver, for performing database operations.
      */
     private AmazonS3Client s3Client;
-    private Uploader uploader;
     private NotificationManager nm;
+    private SharedPreferences sharedPref;
 
 
     /**
@@ -57,7 +57,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         s3Client = new AmazonS3Client(
                 new BasicAWSCredentials(getContext().getString(R.string.kulu_s3_access_key_id),
                         context.getString(R.string.kulu_s3_secret_access_key)));
-        nm = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     /**
@@ -68,7 +68,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         s3Client = new AmazonS3Client(
                 new BasicAWSCredentials(getContext().getString(R.string.kulu_s3_access_key_id),
                         getContext().getString(R.string.kulu_s3_secret_access_key)));
-        nm = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     @Override
@@ -106,7 +106,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                 // create a new uploader for this file
                 Log.e(TAG, "Bucket " + s3BucketName + " " + s3ObjectKey + " " + fileToUpload);
-                uploader = new Uploader(getContext(), s3Client, s3BucketName, s3ObjectKey, fileToUpload);
+                Uploader uploader = new Uploader(getContext(), s3Client, s3BucketName, s3ObjectKey, fileToUpload);
                 uploader.setProgressListener(new UploadProgressListener() {
                     @Override
                     public void progressChanged(ProgressEvent progressEvent,
@@ -147,18 +147,27 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         nm.cancel(NOTIFY_ID_UPLOAD);
     }
 
+    private KuluBackend upload() throws IOException {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        return new KuluBackend(sharedPref.getString(SplashScreen.TEAM_NAME, ""));
+    }
+
     private void uploadInvoice(String s3Location, ExpenseEntry result) throws IOException {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        KuluBackend backend = new KuluBackend(sharedPref.getString(SplashScreen.TEAM_NAME, ""));
-        backend.createInvoice(getContext().getString(R.string.kulu_backend_service_url), s3Location, result, getUserInfo(getContext(), result), sharedPref.getString(SplashScreen.TOKEN, ""));
+        upload().createInvoice(getContext().getString(R.string.kulu_backend_service_url),
+                s3Location,
+                result,
+                getUserInfo(getContext(),
+                        result),
+                sharedPref.getString(SplashScreen.TOKEN, ""));
     }
 
     private void uploadNoProofInvoice(ExpenseEntry result) throws IOException {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        KuluBackend backend = new KuluBackend(sharedPref.getString(SplashScreen.TEAM_NAME, ""));
-        backend.createNoProofInvoice(getContext().getString(R.string.kulu_backend_service_url), result, getUserInfo(getContext(), result), sharedPref.getString(SplashScreen.TOKEN, ""));
+        upload().createNoProofInvoice(getContext().getString(R.string.kulu_backend_service_url),
+                result,
+                getUserInfo(getContext(),
+                        result),
+                sharedPref.getString(SplashScreen.TOKEN, ""));
     }
-
 
     private void broadcastFinished(String s3Location, String fileUploaded) {
         Bundle b = new Bundle();
@@ -197,7 +206,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         Intent notificationIntent = new Intent(getContext(), MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(getContext(), 0, notificationIntent, 0);
+        PendingIntent contentIntent =
+                PendingIntent.getActivity(getContext(), 0, notificationIntent, 0);
         builder.setContentIntent(contentIntent);
 
         return builder.build();

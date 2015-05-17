@@ -17,64 +17,70 @@ import java.util.Map;
 public class KuluBackend {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private OkHttpClient client;
-    private final String idKey = "id";
-    private final String requestKey = "storage_key";
-    private final String remarksKey = "remarks";
-    private final String expenseTypeKey = "expense_type";
-    private final String dateKey = "date";
-    private final String merchantNameKey = "name";
-    private final String amountKey = "amount";
-    private final String currencyKey = "currency";
-    private final String invoice = "invoice";
-    private final String emailKey = "email";
-    private final String organizationNameKey = "organization_name";
+    private final String idKey;
+    private final String requestKey;
+    private final String remarksKey;
+    private final String expenseTypeKey;
+    private final String dateKey;
+    private final String merchantNameKey;
+    private final String amountKey;
+    private final String currencyKey;
+    private final String invoice;
+    private final String emailKey;
+    private final String organizationNameKey;
     private String organizationName;
 
     public KuluBackend(String orgName) {
         organizationName = orgName;
+        idKey = "id";
+        requestKey = "storage_key";
+        remarksKey = "remarks";
+        expenseTypeKey = "expense_type";
+        dateKey = "date";
+        merchantNameKey = "name";
+        amountKey = "amount";
+        currencyKey = "currency";
+        invoice = "invoice";
+        emailKey = "email";
+        organizationNameKey = "organization_name";
         client = new OkHttpClient();
     }
 
-    public String createInvoice(String url, String s3Location, ExpenseEntry expense, HashMap<String, String> userInfo, String token) throws IOException {
+    private String create(String url, String s3Location, ExpenseEntry expense, HashMap<String, String> userInfo, String token) throws IOException {
         Map<String, Object> requestMap = new HashMap<String, Object>();
         Map<String, Object> subRequestMap = new HashMap<String, Object>();
         subRequestMap.put(idKey, expense.getId());
-        subRequestMap.put(requestKey, FileUtils.getLastPartOfFile(s3Location));
+
+        if (s3Location != null && !s3Location.isEmpty()) {
+            subRequestMap.put(requestKey, FileUtils.getLastPartOfFile(s3Location));
+        }
+
         subRequestMap.put(remarksKey, expense.getComments());
         subRequestMap.put(expenseTypeKey, expense.getExpenseType());
         subRequestMap.put(dateKey, getDate(expense));
         subRequestMap.put(emailKey, userInfo.get(SplashScreen.ACCOUNT_NAME));
-
-        requestMap.put(invoice, subRequestMap);
-        requestMap.put(organizationNameKey, organizationName);
-
-        return makeRequest(url, requestMap, token);
-    }
-
-    public String createNoProofInvoice(String url, ExpenseEntry expense, HashMap<String, String> userInfo, String token) throws IOException {
-        Map<String, Object> requestMap = new HashMap<String, Object>();
-        Map<String, Object> subRequestMap = new HashMap<String, Object>();
-        subRequestMap.put(idKey, expense.getId());
-        subRequestMap.put(remarksKey, expense.getComments());
-        subRequestMap.put(expenseTypeKey, expense.getExpenseType());
-        subRequestMap.put(dateKey , getExpenseDate(expense));
         subRequestMap.put(merchantNameKey , expense.getMerchantName());
         subRequestMap.put(amountKey , expense.getAmount());
         subRequestMap.put(currencyKey , expense.getCurrency());
         subRequestMap.put(emailKey, userInfo.get(SplashScreen.ACCOUNT_NAME));
 
+
         requestMap.put(invoice, subRequestMap);
         requestMap.put(organizationNameKey, organizationName);
 
         return makeRequest(url, requestMap, token);
     }
 
-    private String getDate(ExpenseEntry expense) {
-        return new DateTime(expense.getCreatedAt()).toString("yyyy-MM-dd");
+    public String createInvoice(String url, String s3Location, ExpenseEntry expense, HashMap<String, String> userInfo, String token) throws IOException {
+        return create(url, s3Location, expense, userInfo, token);
     }
 
-    private String getExpenseDate(ExpenseEntry expense) {
-        return new DateTime(expense.getExpenseDate()).toString("yyyy-MM-dd");
+    public String createNoProofInvoice(String url, ExpenseEntry expense, HashMap<String, String> userInfo, String token) throws IOException {
+        return create(url, null, expense, userInfo, token);
+    }
+
+    private String getDate(ExpenseEntry expense) {
+        return new DateTime(expense.getCreatedAt()).toString("yyyy-MM-dd");
     }
 
     private String makeRequest(String url, Map<String, Object> requestMap, String token) throws IOException {
