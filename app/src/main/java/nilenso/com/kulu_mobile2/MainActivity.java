@@ -21,13 +21,14 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -138,7 +139,7 @@ public class MainActivity extends ActionBarActivity {
             ContentResolver.setSyncAutomatically(currentAccount, AUTHORITY, false);
             ContentResolver.removePeriodicSync(currentAccount, AUTHORITY, Bundle.EMPTY);
         } catch (Exception e) {
-            Log.w("Removing Auto Sync", e.toString());
+            Log.w(LOG_TAG, "Removing AutoSync [FAILED] " + e.toString());
         }
     }
 
@@ -239,8 +240,8 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "IMG_" + timeStamp;
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
+        String imageFileName = "IMG_" + timeStamp + UUID.randomUUID().toString();
         File storageDir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
 
@@ -261,7 +262,7 @@ public class MainActivity extends ActionBarActivity {
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(CURRENT_PHOTO_PATH, mCurrentPhotoPath.getPath());
-        editor.commit();
+        editor.apply();
     }
 
     private Uri getCurrentPhotoPath() {
@@ -280,7 +281,6 @@ public class MainActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.sign_out) {
             startSignOutActivity();
             return true;

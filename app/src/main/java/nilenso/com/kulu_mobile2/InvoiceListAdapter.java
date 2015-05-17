@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import io.realm.RealmResults;
 
 public class InvoiceListAdapter extends ArrayAdapter<ExpenseEntry> {
@@ -41,17 +44,19 @@ public class InvoiceListAdapter extends ArrayAdapter<ExpenseEntry> {
         return convertView != null;
     }
 
-    private boolean invoiceExists(ExpenseEntry currentItem) {
-        return currentItem.getInvoice() != null;
-    }
 
     private void setCreatedAtTime(View convertView, ExpenseEntry currentItem) {
         TextView tv1 = (TextView) convertView.findViewById(R.id.invoice_file_timestamp);
-        tv1.setText(currentItem.getCreatedAt().toString());
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy, hh:mm aaa", Locale.ENGLISH);
+        tv1.setText(sdf.format(currentItem.getCreatedAt()));
     }
 
     private void setRemarks(View convertView, ExpenseEntry currentItem) {
         TextView tv = (TextView) convertView.findViewById(R.id.invoice_file_name);
-        tv.setText(currentItem.getComments());
+
+        String comments = currentItem.getComments();
+        if (comments.isEmpty()) comments = "-";
+
+        tv.setText(comments);
     }
 }
