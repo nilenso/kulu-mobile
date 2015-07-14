@@ -9,16 +9,18 @@
         android:layout_height="wrap_content"
         android:id="@+id/kuluLogo"
         android:src="@drawable/logo"
-        android:layout_marginBottom="50dp"
         android:layout_above="@+id/loginOrgName"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="55dp" />
 
     <EditText
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:id="@+id/loginOrgName"
         android:inputType="text"
+        android:digits="qwertyuiopasdfghjklzxcvbnm"
         android:hint="@string/login_org_name"
+        android:capitalize="none"
         android:layout_above="@+id/loginEmail"
         android:layout_centerHorizontal="true" />
 

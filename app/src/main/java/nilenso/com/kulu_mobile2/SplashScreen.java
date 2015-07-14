@@ -45,7 +45,7 @@ public class SplashScreen extends Activity {
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pd = ProgressDialog.show(SplashScreen.this, "" , "Please Wait", false);
+                pd = ProgressDialog.show(SplashScreen.this, "", "Please Wait", false);
                 new LoginTask().execute();
             }
         });
