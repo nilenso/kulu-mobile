@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ import nilenso.com.kulu_mobile2.ExpenseEntry;
 import nilenso.com.kulu_mobile2.MainActivity;
 import nilenso.com.kulu_mobile2.R;
 import nilenso.com.kulu_mobile2.SplashScreen;
+import nilenso.com.kulu_mobile2.StringUtils;
 import nilenso.com.kulu_mobile2.User;
 import nilenso.com.kulu_mobile2.fragments.DatePickerFragment;
 
@@ -51,6 +53,11 @@ public class Record extends FragmentActivity {
         invoiceLocation = getIntent().getStringExtra(MainActivity.INVOICE_LOCATION);
         merchantName = (EditText) findViewById(R.id.merchantName);
         amount = (EditText) findViewById(R.id.amount);
+
+        RadioButton companyExpenseRadio = (RadioButton) findViewById(R.id.company);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        companyExpenseRadio.setText("Paid by " +
+                StringUtils.capitalizeFirstLetter(sharedPref.getString(SplashScreen.TEAM_NAME, "")));
 
         setupDatePicker();
         setupCurrencyPicker();

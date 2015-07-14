@@ -20,7 +20,7 @@
     <string name="capture_invoice">Invoice</string>
 
     <string name="reimbursement">Reimbursement</string>
-    <string name="company">Company</string>
+    <string name="company">Paid by Company</string>
     <string name="expense_type">Expense Type</string>
     <string name="petty_expense">No Proof</string>
     <string name="camera_expense">Take Photo</string>

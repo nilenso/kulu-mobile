@@ -26,5 +26,4 @@
         android:textColor="#ff74819c"
         android:id="@+id/invoice_file_timestamp">
     </TextView>
-
 </RelativeLayout>
