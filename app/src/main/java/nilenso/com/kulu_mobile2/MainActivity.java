@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -72,6 +73,8 @@ public class MainActivity extends ActionBarActivity {
     private void updateView() {
         setContentView(R.layout.activity_main);
         ListView invoiceList = (ListView) findViewById(R.id.listView);
+        TextView empty = (TextView) findViewById(R.id.empty);
+        invoiceList.setEmptyView(empty);
 
         FloatingActionButton cameraExpense = (FloatingActionButton) findViewById(R.id.camera_expense);
         cameraExpense.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +108,7 @@ public class MainActivity extends ActionBarActivity {
             Realm realm = Realm.getInstance(this);
             expenses = realm.where(ExpenseEntry.class).findAll();
         }
+
         invoiceListAdapter = new InvoiceListAdapter(this, R.layout.invoices_list_item, expenses);
         invoiceList.setAdapter(invoiceListAdapter);
     }

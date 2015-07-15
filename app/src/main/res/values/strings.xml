@@ -31,4 +31,5 @@
     <string name="login_user_name">Name</string>
     <string name="login_button">Log In</string>
     <string name="merchant_name">Merchant Name</string>
+    <string name="emptylist">Hit the + button to add an expense. Your expenses will automatically upload on network availability and disappear from this list on completion.</string>
 </resources>
