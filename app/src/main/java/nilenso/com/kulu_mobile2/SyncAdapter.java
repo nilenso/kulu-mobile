@@ -79,7 +79,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         realm.refresh();
         RealmResults<ExpenseEntry> expenseEntries = realm.where(ExpenseEntry.class).equalTo("deleted", false).findAll();
 
-        for (int i=0; i < expenseEntries.size(); i++) {
+        for (int i = 0; i < expenseEntries.size(); i++) {
             ExpenseEntry expense = expenseEntries.get(i);
             String filePath = expense.getInvoicePath();
 
@@ -131,18 +131,23 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                     broadcastState(s3ObjectKey, -1, "Upload was interrupted");
                 }
 
-                try {
-                    String fileName = fileToUpload.getName();
-                    Log.e(TAG, s3Location + " " + fileName);
-                    uploadInvoice(s3Location, expense);
-                    broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
-                    nm.notify(NOTIFY_ID_UPLOAD, buildNotification("Upload finished", 100));
-                    deleteUploadedExpense(expense.getId());
-                    broadcastFinished(s3Location, expense.getId());
-                } catch (IOException e) {
-                    broadcastState(s3ObjectKey, -1, "Upload couldn't be finished as connection to Kulu Backend failed");
-                    nm.notify(NOTIFY_ID_UPLOAD + 1, buildNotification("Upload couldn't be finished as the connection to the backend failed.", -1));
+                if (s3Location != null && !s3Location.isEmpty()) {
+                    try {
+                        String fileName = fileToUpload.getName();
+                        Log.e(TAG, s3Location + " " + fileName);
+                        uploadInvoice(s3Location, expense);
+                        broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
+                        nm.notify(NOTIFY_ID_UPLOAD, buildNotification("Upload finished", 100));
+                        deleteUploadedExpense(expense.getId());
+                        broadcastFinished(s3Location, expense.getId());
+                    } catch (IOException e) {
+                        broadcastState(s3ObjectKey, -1, "Upload couldn't be finished as connection to Kulu Backend failed");
+                        nm.notify(NOTIFY_ID_UPLOAD + 1, buildNotification("Upload couldn't be finished as the connection to the backend failed."));
+                    }
+                } else {
+                    nm.notify(NOTIFY_ID_UPLOAD + 1, buildNotification("There was a network error. But your expense is safe. Kulu will retry soon."));
                 }
+
             }
         }
         nm.cancel(NOTIFY_ID_UPLOAD);
@@ -197,12 +202,27 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         builder.setAutoCancel(true);
         builder.setSmallIcon(R.drawable.ic_launcher);
         builder.setOngoing(true);
-
-        if (progress == -1) {
-            builder.setOngoing(false);
-        }
-
         builder.setProgress(100, progress, false);
+        builder.setStyle(new Notification.BigTextStyle().bigText(msg));
+        Intent notificationIntent = new Intent(getContext(), MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        PendingIntent contentIntent =
+                PendingIntent.getActivity(getContext(), 0, notificationIntent, 0);
+        builder.setContentIntent(contentIntent);
+
+        return builder.build();
+    }
+
+    private Notification buildNotification(String msg) {
+        Notification.Builder builder = new Notification.Builder(getContext());
+        builder.setWhen(System.currentTimeMillis());
+        builder.setTicker(msg);
+        builder.setContentTitle(getContext().getString(R.string.app_name));
+        builder.setAutoCancel(true);
+        builder.setSmallIcon(R.drawable.ic_launcher);
+        builder.setOngoing(false);
+
         builder.setStyle(new Notification.BigTextStyle().bigText(msg));
         Intent notificationIntent = new Intent(getContext(), MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
