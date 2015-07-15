@@ -28,7 +28,7 @@ public class SplashScreen extends Activity {
     static final String SIGN_OUT = "SignOut";
     static final String ERROR = "error";
 
-    private static final String TAG = "SplashScreen" ;
+    private static final String TAG = "SplashScreen";
 
     private ProgressDialog pd;
 
@@ -36,7 +36,7 @@ public class SplashScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (isSigningOut())  signOut();
+        if (isSigningOut()) signOut();
         if (isUserLoggedIn()) startMainActivity();
 
         getActionBar().hide();
@@ -103,7 +103,7 @@ public class SplashScreen extends Activity {
 
     private class LoginTask extends AsyncTask<Void, Void, String> {
         @Override
-        protected String doInBackground(Void...params) {
+        protected String doInBackground(Void... params) {
             String orgName = ((EditText) findViewById(R.id.loginOrgName)).getText().toString();
             String email = ((EditText) findViewById(R.id.loginEmail)).getText().toString();
             String password = ((EditText) findViewById(R.id.loginPassword)).getText().toString();
@@ -115,6 +115,7 @@ public class SplashScreen extends Activity {
                 return ERROR;
             }
         }
+
         @Override
         protected void onPostExecute(String result) {
             if (result.equals(ERROR)) {

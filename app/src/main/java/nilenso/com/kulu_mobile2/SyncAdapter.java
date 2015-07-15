@@ -43,6 +43,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     /**
      * Content resolver, for performing database operations.
+     * Content resolver, for performing database operations.
      */
     private AmazonS3Client s3Client;
     private NotificationManager nm;
@@ -106,7 +107,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                 // create a new uploader for this file
                 Log.e(TAG, "Bucket " + s3BucketName + " " + s3ObjectKey + " " + fileToUpload);
-                Uploader uploader = new Uploader(getContext(), s3Client, s3BucketName, s3ObjectKey, fileToUpload);
+                Uploader uploader = new Uploader(getContext(), s3Client, s3BucketName, s3ObjectKey, fileToUpload, "image/jpeg");
                 uploader.setProgressListener(new UploadProgressListener() {
                     @Override
                     public void progressChanged(ProgressEvent progressEvent,

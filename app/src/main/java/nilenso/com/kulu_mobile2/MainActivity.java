@@ -60,14 +60,14 @@ public class MainActivity extends ActionBarActivity {
 
 
     public final static RealmChangeListener syncListener = new RealmChangeListener() {
-            @Override
-            public void onChange() {
-                ContentResolver.requestSync(
-                        GenericAccountService.GetAccount(),
-                        MainActivity.AUTHORITY,
-                        Bundle.EMPTY);
-            }
-        };
+        @Override
+        public void onChange() {
+            ContentResolver.requestSync(
+                    GenericAccountService.GetAccount(),
+                    MainActivity.AUTHORITY,
+                    Bundle.EMPTY);
+        }
+    };
 
     private void updateView() {
         setContentView(R.layout.activity_main);
@@ -82,7 +82,7 @@ public class MainActivity extends ActionBarActivity {
         });
 
         FloatingActionButton pettyExpense = (FloatingActionButton) findViewById(R.id.petty_expense);
-        pettyExpense.setOnClickListener(new View.OnClickListener(){
+        pettyExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addExpenseWithoutProof();
