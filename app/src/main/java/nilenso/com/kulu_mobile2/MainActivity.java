@@ -48,6 +48,7 @@ public class MainActivity extends ActionBarActivity {
     public static final String INVOICE_LOCATION = "invoiceLocationFromCamera";
     public static final String CURRENT_PHOTO_PATH = "currentPhotoPath";
     public static final String DEFAULT_PHOTO_PATH = "";
+    public static final String SYNC_STATUS = "syncStatus";
 
     private TextView syncMessage;
     private static Animation animationFadeIn;
@@ -160,11 +161,14 @@ public class MainActivity extends ActionBarActivity {
                         ACCOUNT_SERVICE);
 
         accountManager.addAccountExplicitly(newAccount, null, null);
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
 
-        ContentResolver.setIsSyncable(newAccount, AUTHORITY, 1);
-        ContentResolver.setSyncAutomatically(newAccount, AUTHORITY, true);
-        ContentResolver.addPeriodicSync(newAccount, AUTHORITY, Bundle.EMPTY, SYNC_INTERVAL);
-        ContentResolver.requestSync(newAccount, AUTHORITY, Bundle.EMPTY);
+        if (sharedPref.getInt(SYNC_STATUS, 1) > 0) {
+            ContentResolver.setIsSyncable(newAccount, AUTHORITY, 1);
+            ContentResolver.setSyncAutomatically(newAccount, AUTHORITY, true);
+            ContentResolver.addPeriodicSync(newAccount, AUTHORITY, Bundle.EMPTY, SYNC_INTERVAL);
+            ContentResolver.requestSync(newAccount, AUTHORITY, Bundle.EMPTY);
+        }
 
         return GenericAccountService.GetAccount();
     }
@@ -348,12 +352,18 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private int sync(boolean state) {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
         if (state) {
             try {
                 ContentResolver.setIsSyncable(mAccount, AUTHORITY, 1);
                 ContentResolver.requestSync(mAccount, AUTHORITY, Bundle.EMPTY);
                 ContentResolver.addPeriodicSync(mAccount, AUTHORITY, Bundle.EMPTY, SYNC_INTERVAL);
                 ContentResolver.setSyncAutomatically(mAccount, AUTHORITY, true);
+
+                editor.putInt(SYNC_STATUS, 1);
+                editor.apply();
                 return 1;
             } catch (Exception e) {
                 Log.w(LOG_TAG, "Removing AutoSync [FAILED] " + e.toString());
@@ -363,6 +373,10 @@ public class MainActivity extends ActionBarActivity {
             ContentResolver.setIsSyncable(mAccount, AUTHORITY, 0);
             ContentResolver.cancelSync(mAccount, AUTHORITY);
             ContentResolver.removePeriodicSync(mAccount, AUTHORITY, Bundle.EMPTY);
+
+            editor.putInt(SYNC_STATUS, 0);
+            editor.apply();
+
             return 0;
         }
     }
