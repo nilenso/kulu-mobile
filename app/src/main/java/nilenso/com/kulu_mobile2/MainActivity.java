@@ -20,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,7 +62,7 @@ public class MainActivity extends ActionBarActivity {
 
     // An account type, in the form of a domain name
     Account mAccount;
-    private String[] syncStates = {"Turn Off Sync", "Turn On Sync"};
+    private String[] syncStates = {"Turn off Auto Upload", "Turn on Auto Upload"};
 
     public final static RealmChangeListener syncListener = new RealmChangeListener() {
         @Override
@@ -81,22 +80,26 @@ public class MainActivity extends ActionBarActivity {
         public void onStatusChanged(int which) {
             MainActivity.this.runOnUiThread(new Runnable() {
                 public void run() {
-                    if (isSyncable()) {
-                        syncMessage.setVisibility(View.GONE);
-                    } else {
-                        syncMessage.setVisibility(View.VISIBLE);
-                    }
+                    hideOrShowSyncMessage();
                 }
             });
         }
     };
+
+    private void hideOrShowSyncMessage() {
+        if (isSyncable()) {
+            syncMessage.setVisibility(View.GONE);
+        } else {
+            syncMessage.setVisibility(View.VISIBLE);
+        }
+    }
 
     private void updateView() {
         setContentView(R.layout.activity_main);
         ListView invoiceList = (ListView) findViewById(R.id.listView);
         TextView empty = (TextView) findViewById(R.id.empty);
         syncMessage = (TextView) findViewById(R.id.syncmessage);
-        animationFadeIn = AnimationUtils.loadAnimation(this, R.anim.fadein);
+        hideOrShowSyncMessage();
         invoiceList.setEmptyView(empty);
 
         final int mask = ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE |
