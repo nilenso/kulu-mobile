@@ -19,8 +19,6 @@ import org.json.JSONException;
 import java.io.IOException;
 
 public class SplashScreen extends Activity {
-
-    private static final int RC_SIGN_IN = 0;
     public static final String TEAM_NAME = "TeamName";
     public static final String ACCOUNT_NAME = "AccountName";
     public static final String TOKEN = "token";

@@ -64,7 +64,6 @@ public class KuluBackend {
         subRequestMap.put(currencyKey , expense.getCurrency());
         subRequestMap.put(emailKey, userInfo.get(SplashScreen.ACCOUNT_NAME));
 
-
         requestMap.put(invoice, subRequestMap);
         requestMap.put(organizationNameKey, organizationName);
 

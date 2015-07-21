@@ -25,7 +25,6 @@ public class InvoiceListAdapter extends ArrayAdapter<ExpenseEntry> {
         setRemarks(convertView, currentItem);
         setCreatedAtTime(convertView, currentItem);
 
-
         return convertView;
     }
 

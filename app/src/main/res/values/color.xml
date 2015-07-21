@@ -12,4 +12,5 @@
 
     <color name="logo_blue_dark">#204489</color>
     <color name="logo_blue_light">#18BFD6</color>
+    <color name="sync_unavailable">#ffc52507</color>
 </resources>

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SyncStatusObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +19,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +50,9 @@ public class MainActivity extends ActionBarActivity {
     public static final String CURRENT_PHOTO_PATH = "currentPhotoPath";
     public static final String DEFAULT_PHOTO_PATH = "";
 
+    private TextView syncMessage;
+    private static Animation animationFadeIn;
+
     public static final String AUTHORITY = "nilenso.com.kulu_mobile2.sync.basicsyncadapter";
 
     public static final long SECONDS_PER_MINUTE = 60L;
@@ -55,10 +61,9 @@ public class MainActivity extends ActionBarActivity {
             SYNC_INTERVAL_IN_MINUTES *
                     SECONDS_PER_MINUTE;
 
-
     // An account type, in the form of a domain name
     Account mAccount;
-
+    private String[] syncStates = {"Turn Off Sync", "Turn On Sync"};
 
     public final static RealmChangeListener syncListener = new RealmChangeListener() {
         @Override
@@ -70,11 +75,33 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
+    private Object statusListener;
+    private SyncStatusObserver syncObserverHandle = new SyncStatusObserver() {
+        @Override
+        public void onStatusChanged(int which) {
+            MainActivity.this.runOnUiThread(new Runnable() {
+                public void run() {
+                    if (isSyncable()) {
+                        syncMessage.setVisibility(View.GONE);
+                    } else {
+                        syncMessage.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+        }
+    };
+
     private void updateView() {
         setContentView(R.layout.activity_main);
         ListView invoiceList = (ListView) findViewById(R.id.listView);
         TextView empty = (TextView) findViewById(R.id.empty);
+        syncMessage = (TextView) findViewById(R.id.syncmessage);
+        animationFadeIn = AnimationUtils.loadAnimation(this, R.anim.fadein);
         invoiceList.setEmptyView(empty);
+
+        final int mask = ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE |
+                ContentResolver.SYNC_OBSERVER_TYPE_PENDING | ContentResolver.SYNC_OBSERVER_TYPE_SETTINGS;
+        statusListener = ContentResolver.addStatusChangeListener(mask, syncObserverHandle);
 
         FloatingActionButton cameraExpense = (FloatingActionButton) findViewById(R.id.camera_expense);
         cameraExpense.setOnClickListener(new View.OnClickListener() {
@@ -93,8 +120,7 @@ public class MainActivity extends ActionBarActivity {
         });
 
         invoiceList.invalidate();
-        RealmResults<ExpenseEntry> expenses = null;
-
+        RealmResults<ExpenseEntry> expenses;
 
         try {
             Realm realm = Realm.getInstance(this);
@@ -116,8 +142,9 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateView();
         mAccount = CreateSyncAccount(this);
+        updateView();
+
         Realm.getInstance(this).addChangeListener(syncListener);
         IntentFilter f = new IntentFilter(SyncAdapter.UPLOAD_FINISHED_ACTION);
         registerReceiver(uploadFinishedReceiver, f);
@@ -131,20 +158,12 @@ public class MainActivity extends ActionBarActivity {
 
         accountManager.addAccountExplicitly(newAccount, null, null);
 
+        ContentResolver.setIsSyncable(newAccount, AUTHORITY, 1);
         ContentResolver.setSyncAutomatically(newAccount, AUTHORITY, true);
         ContentResolver.addPeriodicSync(newAccount, AUTHORITY, Bundle.EMPTY, SYNC_INTERVAL);
         ContentResolver.requestSync(newAccount, AUTHORITY, Bundle.EMPTY);
 
         return GenericAccountService.GetAccount();
-    }
-
-    private void removeAutoSync(Account currentAccount) {
-        try {
-            ContentResolver.setSyncAutomatically(currentAccount, AUTHORITY, false);
-            ContentResolver.removePeriodicSync(currentAccount, AUTHORITY, Bundle.EMPTY);
-        } catch (Exception e) {
-            Log.w(LOG_TAG, "Removing AutoSync [FAILED] " + e.toString());
-        }
     }
 
     @Override
@@ -156,6 +175,10 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onPause() {
         super.onPause();
+        if (statusListener != null) {
+            ContentResolver.removeStatusChangeListener(statusListener);
+            statusListener = null;
+        }
     }
 
     @Override
@@ -168,7 +191,6 @@ public class MainActivity extends ActionBarActivity {
     private void addExpense(Uri invoiceURI) {
         Intent recordExpense = new Intent(this, RecordExpense.class);
         recordExpense.putExtra(INVOICE_LOCATION, invoiceURI.getPath());
-
         startActivity(recordExpense);
     }
 
@@ -210,8 +232,6 @@ public class MainActivity extends ActionBarActivity {
                         "Failed to capture image", Toast.LENGTH_SHORT).show();
             }
         }
-
-
     }
 
     private void setCurrentPhotoPath() {
@@ -235,7 +255,7 @@ public class MainActivity extends ActionBarActivity {
                 Log.e(LOG_TAG, "Problem in saving the file" + ex.getMessage());
             }
 
-            // continue only if the File was successfully created
+            // continue only if the file was successfully created
             if (photoFile != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
                 startActivityForResult(takePictureIntent, 1);
@@ -282,6 +302,19 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.removeItem(Menu.FIRST);
+
+        if (isSyncable()) {
+            menu.add(0, Menu.FIRST, Menu.NONE, syncStates[0]);
+        } else {
+            menu.add(0, Menu.FIRST, Menu.NONE, syncStates[1]);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
@@ -290,15 +323,45 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
 
+        if (id == Menu.FIRST) {
+            int state = sync(!isSyncable()); // toggle sync
+            item.setTitle(syncStates[state]);
+            return true;
+        }
+
         return true;
+    }
+
+    private boolean isSyncable() {
+        return ContentResolver.getIsSyncable(mAccount, AUTHORITY) > 0;
     }
 
     private void startSignOutActivity() {
         Intent intent = new Intent(this, SplashScreen.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(SplashScreen.SIGN_OUT, "true");
-        removeAutoSync(mAccount);
+        sync(false);
         startActivity(intent);
+    }
+
+    private int sync(boolean state) {
+        if (state) {
+            try {
+                ContentResolver.setIsSyncable(mAccount, AUTHORITY, 1);
+                ContentResolver.requestSync(mAccount, AUTHORITY, Bundle.EMPTY);
+                ContentResolver.addPeriodicSync(mAccount, AUTHORITY, Bundle.EMPTY, SYNC_INTERVAL);
+                ContentResolver.setSyncAutomatically(mAccount, AUTHORITY, true);
+                return 1;
+            } catch (Exception e) {
+                Log.w(LOG_TAG, "Removing AutoSync [FAILED] " + e.toString());
+                return 0;
+            }
+        } else {
+            ContentResolver.setIsSyncable(mAccount, AUTHORITY, 0);
+            ContentResolver.cancelSync(mAccount, AUTHORITY);
+            ContentResolver.removePeriodicSync(mAccount, AUTHORITY, Bundle.EMPTY);
+            return 0;
+        }
     }
 
     public void onBackPressed() {
