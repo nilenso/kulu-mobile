@@ -22,6 +22,7 @@
         android:capitalize="none"
         android:digits="qwertyuiopasdfghjklzxcvbnm"
         android:hint="@string/login_org_name"
+        android:singleLine="true"
         android:inputType="text" />
 
     <EditText
