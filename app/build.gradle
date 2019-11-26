@@ -4,13 +4,15 @@ android {
     signingConfigs {
     }
 
-    compileSdkVersion 27
+    compileSdkVersion 29
     defaultConfig {
         applicationId 'nilenso.com.kulu_mobile2'
         minSdkVersion 27
-        targetSdkVersion 27
+        targetSdkVersion 29
         versionCode 22
         versionName '1.20'
+
+        javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true
     }
     buildTypes {
         release {
@@ -22,6 +24,7 @@ android {
     packagingOptions {
         exclude 'META-INF/MANIFEST.MF'
     }
+    buildToolsVersion = '29.0.2'
 }
 
 dependencies {
@@ -32,6 +35,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-identity:17.0.0'
     implementation 'com.google.android.gms:play-services-plus:17.0.0'
     implementation 'com.getbase:floatingactionbutton:1.5.1'
+    implementation 'com.android.support:appcompat-v7:19.0.0'
     implementation 'com.mobsandgeeks:android-saripaar:2.0.0'
+    implementation 'io.realm:realm-android:0.77.0'
+    annotationProcessor 'io.realm:realm-android:0.77.0'
 }
 

@@ -87,22 +87,23 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/shaders" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 27 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 29 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Gradle: __local_aars__:/Users/kitallis/AndroidStudioProjects/kulu_mobile/app/libs/aws-android-sdk-2.0.5-core.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="Gradle: __local_aars__:/Users/kitallis/AndroidStudioProjects/kulu_mobile/app/libs/aws-android-sdk-2.0.5-s3.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="Gradle: __local_aars__:/Users/kitallis/AndroidStudioProjects/kulu_mobile/app/libs/commons-io-2.4.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="Gradle: __local_aars__:/Users/kitallis/AndroidStudioProjects/kulu_mobile/app/libs/gson-2.3.1.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="Gradle: __local_aars__:/Users/kitallis/AndroidStudioProjects/kulu_mobile/app/libs/okhttp-2.0.0.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="Gradle: __local_aars__:/Users/kitallis/AndroidStudioProjects/kulu_mobile/app/libs/okio-1.0.1.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="Gradle: __local_aars__:/Users/kitallis/AndroidStudioProjects/kulu_mobile/app/libs/realm-0.77.0.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="Gradle: __local_aars__:/Users/kitallis/AndroidStudioProjects/kulu_mobile/app/libs/Simpl3r-1.2.0.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:/Users/murtaza/Dev/kulu-mobile/app/libs/okio-1.0.1.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:/Users/murtaza/Dev/kulu-mobile/app/libs/Simpl3r-1.2.0.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:/Users/murtaza/Dev/kulu-mobile/app/libs/aws-android-sdk-2.0.5-s3.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:/Users/murtaza/Dev/kulu-mobile/app/libs/commons-io-2.4.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:/Users/murtaza/Dev/kulu-mobile/app/libs/gson-2.3.1.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:/Users/murtaza/Dev/kulu-mobile/app/libs/aws-android-sdk-2.0.5-core.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:/Users/murtaza/Dev/kulu-mobile/app/libs/okhttp-2.0.0.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.collection:collection:1.0.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-common:2.0.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.arch.core:core-common:2.0.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.annotation:annotation:1.0.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-annotations:19.1.0@jar" level="project" />
+    <orderEntry type="library" name="Gradle: com.android.support:support-v4:19.0.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.mobsandgeeks:android-saripaar:2.0.0@jar" level="project" />
+    <orderEntry type="library" name="Gradle: io.realm:realm-android:0.77.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-identity:17.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-plus:17.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-audience:17.0.0@aar" level="project" />
@@ -133,5 +134,6 @@
     <orderEntry type="library" name="Gradle: androidx.localbroadcastmanager:localbroadcastmanager:1.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.print:print:1.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.getbase:floatingactionbutton:1.5.1@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.android.support:appcompat-v7:19.0.0@aar" level="project" />
   </component>
 </module>
