@@ -14,7 +14,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,7 +43,7 @@ import nilenso.com.kulu_mobile2.expenses.RecordExpense;
 import nilenso.com.kulu_mobile2.expenses.RecordNoProofExpense;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
     private InvoiceListAdapter invoiceListAdapter;
     private String LOG_TAG = "MainActivity";
     public static final String INVOICE_LOCATION = "invoiceLocationFromCamera";

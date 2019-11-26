@@ -14,7 +14,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -27,6 +32,7 @@ public class SplashScreen extends Activity {
     static final String ERROR = "error";
 
     private static final String TAG = "SplashScreen";
+    public static final String URL = "http://192.168.56.1:3001/login";
 
     private ProgressDialog pd;
 
@@ -37,14 +43,41 @@ public class SplashScreen extends Activity {
         if (isSigningOut()) signOut();
         if (isUserLoggedIn()) startMainActivity();
 
-        getActionBar().hide();
         setContentView(R.layout.splash_screen);
 
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String orgName = ((EditText) findViewById(R.id.loginOrgName)).getText().toString();
+                String email = ((EditText) findViewById(R.id.loginEmail)).getText().toString();
+                String password = ((EditText) findViewById(R.id.loginPassword)).getText().toString();
                 pd = ProgressDialog.show(SplashScreen.this, "", "Please Wait", false);
-                new LoginTask().execute();
+
+                new LoginClient().login(URL, orgName, email, password, new Callback() {
+                    @Override
+                    public void onFailure(Request request, IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(Response response) throws IOException {
+
+                        if (!response.isSuccessful())
+                            throw new IOException("Unexpected code " + response);
+                        try {
+                            String token = new JSONObject(response.body().string()).getString("token");
+                            String teamName = ((EditText) findViewById(R.id.loginOrgName)).getText().toString();
+                            String email = ((EditText) findViewById(R.id.loginEmail)).getText().toString();
+                            saveUserInfo(teamName, email, token);
+                            pd.dismiss();
+                            startMainActivity();
+                        } catch (JSONException e) {
+                            pd.dismiss();
+                            Toast.makeText(SplashScreen.this, "Issue with logging in", Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         });
 
@@ -69,7 +102,7 @@ public class SplashScreen extends Activity {
         editor.putString(ACCOUNT_NAME, email);
         editor.putString(TOKEN, token);
         editor.putString(LOGGED_IN, "true");
-        editor.commit();
+        editor.apply();
         Log.e(TAG, String.valueOf(sharedPref.contains(LOGGED_IN)));
     }
 
@@ -77,7 +110,7 @@ public class SplashScreen extends Activity {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.clear();
-        editor.commit();
+        editor.apply();
     }
 
     private boolean isUserLoggedIn() {
@@ -97,35 +130,5 @@ public class SplashScreen extends Activity {
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
         startActivity(intent);
-    }
-
-    private class LoginTask extends AsyncTask<Void, Void, String> {
-        @Override
-        protected String doInBackground(Void... params) {
-            String orgName = ((EditText) findViewById(R.id.loginOrgName)).getText().toString();
-            String email = ((EditText) findViewById(R.id.loginEmail)).getText().toString();
-            String password = ((EditText) findViewById(R.id.loginPassword)).getText().toString();
-            try {
-                return new LoginClient().login(getString(R.string.kulu_backend_login_url), orgName, email, password);
-            } catch (IOException e) {
-                return ERROR;
-            } catch (JSONException e) {
-                return ERROR;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (result.equals(ERROR)) {
-                pd.dismiss();
-                Toast.makeText(getBaseContext(), "Issue with logging in", Toast.LENGTH_SHORT).show();
-            } else {
-                String teamName = ((EditText) findViewById(R.id.loginOrgName)).getText().toString();
-                String email = ((EditText) findViewById(R.id.loginEmail)).getText().toString();
-                saveUserInfo(teamName, email, result);
-                pd.dismiss();
-                startMainActivity();
-            }
-        }
     }
 }

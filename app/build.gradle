@@ -35,7 +35,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-identity:17.0.0'
     implementation 'com.google.android.gms:play-services-plus:17.0.0'
     implementation 'com.getbase:floatingactionbutton:1.5.1'
-    implementation 'com.android.support:appcompat-v7:19.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.mobsandgeeks:android-saripaar:2.0.0'
     implementation 'io.realm:realm-android:0.77.0'
     annotationProcessor 'io.realm:realm-android:0.77.0'

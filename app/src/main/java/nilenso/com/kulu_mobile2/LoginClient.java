@@ -1,6 +1,7 @@
 package nilenso.com.kulu_mobile2;
 
 import com.google.gson.Gson;
+import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -26,7 +27,7 @@ public class LoginClient {
         client = new OkHttpClient();
     }
 
-    public String login(String url, String orgName, String email, String password) throws IOException, JSONException {
+    public void login(String url, String orgName, String email, String password, Callback callback) {
         Map<String, Object> requestMap = new HashMap();
         Map<String, Object> subRequestMap = new HashMap();
 
@@ -36,10 +37,10 @@ public class LoginClient {
 
         requestMap.put(credsKey, subRequestMap);
 
-        return makeRequest(url, requestMap);
+        makeRequest(url, requestMap, callback);
     }
 
-    private String makeRequest(String url, Map<String, Object> requestMap) throws IOException, JSONException {
+    private void makeRequest(String url, Map<String, Object> requestMap, Callback callback) {
         Gson gson = new Gson();
         String json = gson.toJson(requestMap);
 
@@ -48,9 +49,6 @@ public class LoginClient {
                 .url(url)
                 .post(body)
                 .build();
-        Response response = client.newCall(request).execute();
-
-        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-        return new JSONObject(response.body().string()).getString("token");
+        client.newCall(request).enqueue(callback);
     }
 }
