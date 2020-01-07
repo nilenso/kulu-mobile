@@ -37,7 +37,7 @@ dependencies {
     implementation 'com.getbase:floatingactionbutton:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
-    implementation 'io.realm:realm-android:0.77.0'
-    annotationProcessor 'io.realm:realm-android:0.77.0'
+    implementation 'io.realm:realm-android:0.80.2'
+    annotationProcessor 'io.realm:realm-android:0.80.2'
 }
 

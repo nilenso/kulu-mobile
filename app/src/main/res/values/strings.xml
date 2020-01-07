@@ -7,8 +7,8 @@
     <string name="kulu_s3_tmp_bucket" translatable="false">dev_kulu_invoices</string>
     <string name="kulu_s3_access_key_id" translatable="false">AKIAIQRWHSDWA6CFUGIA</string>
     <string name="kulu_s3_secret_access_key" translatable="false"> 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</string>
-    <string name="kulu_backend_service_url">http://192.168.56.1:3001/invoices</string>
-    <string name="kulu_backend_login_url">http://192.168.56.1:3001/login</string>
+    <string name="kulu_backend_service_url">https://kulu-backend.herokuapp.com/invoices</string>
+    <string name="kulu_backend_login_url">https://kulu-backend.herokuapp.com/login</string>
     <string name="title_activity_record_expense"></string>
     <string name="hello_world">Hello world!</string>
     <string name="merchant_hint">Merchant Name</string>

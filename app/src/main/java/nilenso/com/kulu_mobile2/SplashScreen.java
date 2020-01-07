@@ -31,7 +31,7 @@ public class SplashScreen extends Activity {
     static final String ERROR = "error";
 
     private static final String TAG = "SplashScreen";
-    public static final String URL = "http://192.168.56.1:3001/login";
+    public static final String URL = "https://kulu-backend.herokuapp.com/login";
 
     private ProgressDialog pd;
 
@@ -55,7 +55,6 @@ public class SplashScreen extends Activity {
                 new LoginClient().login(URL, orgName, email, password, new Callback() {
                     @Override
                     public void onFailure(Request request, IOException e) {
-
                     }
 
                     @Override

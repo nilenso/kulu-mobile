@@ -141,7 +141,7 @@ public class Record extends FragmentActivity {
         User user = realm.where(User.class).equalTo("email", currentUserEmail()).findFirst();
         if (isNull(user)) {
             user = realm.createObject(User.class);
-            user.setCurrentUserInfo(currentUserEmail());
+            user.setEmail(currentUserEmail());
         }
     }
 
