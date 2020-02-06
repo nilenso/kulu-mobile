@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile2;
+package nilenso.com.kulu;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -61,7 +61,11 @@ public class SplashScreen extends Activity {
                     public void onResponse(Response response) throws IOException {
 
                         if (!response.isSuccessful())
-                            throw new IOException("Unexpected code " + response);
+                            if (response.code() == 401){
+                                Toast.makeText(SplashScreen.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(SplashScreen.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            }
                         try {
                             String token = new JSONObject(response.body().string()).getString("token");
                             String teamName = ((EditText) findViewById(R.id.loginOrgName)).getText().toString();
@@ -71,7 +75,7 @@ public class SplashScreen extends Activity {
                             startMainActivity();
                         } catch (JSONException e) {
                             pd.dismiss();
-                            Toast.makeText(SplashScreen.this, "Issue with logging in", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SplashScreen.this, "Couldn't clog in", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
                     }

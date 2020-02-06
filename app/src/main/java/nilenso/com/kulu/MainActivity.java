@@ -1,5 +1,6 @@
-package nilenso.com.kulu_mobile2;
+package nilenso.com.kulu;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.BroadcastReceiver;
@@ -9,12 +10,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SyncStatusObserver;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import android.util.Log;
 import android.view.Menu;
@@ -38,9 +43,10 @@ import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmMigrationNeededException;
-import nilenso.com.kulu_mobile2.accounts.GenericAccountService;
-import nilenso.com.kulu_mobile2.expenses.RecordExpense;
-import nilenso.com.kulu_mobile2.expenses.RecordNoProofExpense;
+import nilenso.com.kulu.accounts.GenericAccountService;
+import nilenso.com.kulu.expenses.RecordExpense;
+import nilenso.com.kulu.expenses.RecordNoProofExpense;
+import nilenso.com.kulu.R;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -54,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView syncMessage;
     private static Animation animationFadeIn;
 
-    public static final String AUTHORITY = "nilenso.com.kulu_mobile2.sync.basicsyncadapter";
+    public static final String AUTHORITY = "nilenso.com.kulu.sync.basicsyncadapter";
 
     public static final long SECONDS_PER_MINUTE = 60L;
     public static final long SYNC_INTERVAL_IN_MINUTES = 30L;
@@ -177,6 +183,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, 42);
+        }
         updateView();
     }
 
@@ -265,7 +275,8 @@ public class MainActivity extends AppCompatActivity {
 
             // continue only if the file was successfully created
             if (photoFile != null) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", photoFile));
                 startActivityForResult(takePictureIntent, 1);
             }
         }
@@ -284,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
                 storageDir      /* directory */
         );
 
-        mCurrentPhotoPath = Uri.fromFile(mediaFile);
+        mCurrentPhotoPath = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", mediaFile);
         saveCurrentPhotoPath();
         Log.e(LOG_TAG, "FILE path " + mCurrentPhotoPath);
         return mediaFile;

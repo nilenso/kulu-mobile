@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="nilenso.com.kulu_mobile2">
+    package="nilenso.com.kulu">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
 
     <application
@@ -27,18 +28,27 @@
         android:theme="@style/Theme.AppCompat.Light"
         tools:ignore="GoogleAppIndexingWarning">
 
+        <provider
+            android:name=".GenericFileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
 
         <activity
-            android:name=".MainActivity"
+            android:name="nilenso.com.kulu.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light"/>
 
         <activity
-            android:name=".SplashScreen"
+            android:name="nilenso.com.kulu.SplashScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light">
@@ -49,7 +59,7 @@
         </activity>
 
         <service
-            android:name=".SyncService"
+            android:name="nilenso.com.kulu.SyncService"
             android:exported="true"
             android:process=":sync">
             <intent-filter>
@@ -62,11 +72,11 @@
         </service>
 
         <provider
-            android:name=".provider.StubProvider"
-            android:authorities="nilenso.com.kulu_mobile2.sync.basicsyncadapter"
+            android:name="nilenso.com.kulu.provider.StubProvider"
+            android:authorities="nilenso.com.kulu.sync.basicsyncadapter"
             android:exported="false" />
 
-        <service android:name=".accounts.GenericAccountService">
+        <service android:name="nilenso.com.kulu.accounts.GenericAccountService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -76,23 +86,23 @@
         </service>
 
         <activity
-            android:name=".expenses.RecordExpense"
+            android:name="nilenso.com.kulu.expenses.RecordExpense"
             android:label="@string/title_activity_record_expense"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName="nilenso.com.kulu.MainActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="nilenso.com.kulu.MainActivity" />
         </activity>
 
         <activity
-            android:name=".expenses.RecordNoProofExpense"
+            android:name="nilenso.com.kulu.expenses.RecordNoProofExpense"
             android:label="@string/title_activity_record_expense"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName="nilenso.com.kulu.MainActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="nilenso.com.kulu.MainActivity" />
         </activity>
     </application>
 </manifest>

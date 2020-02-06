@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile2.expenses;
+package nilenso.com.kulu.expenses;
 
 import android.app.DialogFragment;
 import android.content.SharedPreferences;
@@ -27,13 +27,13 @@ import java.util.Locale;
 import java.util.UUID;
 
 import io.realm.Realm;
-import nilenso.com.kulu_mobile2.ExpenseEntry;
-import nilenso.com.kulu_mobile2.MainActivity;
-import nilenso.com.kulu_mobile2.R;
-import nilenso.com.kulu_mobile2.SplashScreen;
-import nilenso.com.kulu_mobile2.StringUtils;
-import nilenso.com.kulu_mobile2.User;
-import nilenso.com.kulu_mobile2.fragments.DatePickerFragment;
+import nilenso.com.kulu.SplashScreen;
+import nilenso.com.kulu.ExpenseEntry;
+import nilenso.com.kulu.MainActivity;
+import nilenso.com.kulu.R;
+import nilenso.com.kulu.StringUtils;
+import nilenso.com.kulu.User;
+import nilenso.com.kulu.fragments.DatePickerFragment;
 
 
 public class Record extends FragmentActivity {

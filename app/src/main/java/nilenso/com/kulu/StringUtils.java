@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile2;
+package nilenso.com.kulu;
 
 public class StringUtils {
     public static String capitalizeFirstLetter(String original) {

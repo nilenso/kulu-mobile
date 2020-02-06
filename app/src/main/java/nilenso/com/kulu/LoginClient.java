@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile2;
+package nilenso.com.kulu;
 
 import com.google.gson.Gson;
 import com.squareup.okhttp.Callback;

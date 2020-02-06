@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile2;
+package nilenso.com.kulu;
 
 import android.accounts.Account;
 import android.app.Notification;
@@ -27,6 +27,7 @@ import java.util.HashMap;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import nilenso.com.kulu.R;
 
 class SyncAdapter extends AbstractThreadedSyncAdapter {
     public static final String TAG = "SyncAdapter";

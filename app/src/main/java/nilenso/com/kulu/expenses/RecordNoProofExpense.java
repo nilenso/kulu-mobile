@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile2.expenses;
+package nilenso.com.kulu.expenses;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -8,8 +8,8 @@ import com.mobsandgeeks.saripaar.Validator;
 
 import java.text.ParseException;
 
-import nilenso.com.kulu_mobile2.R;
-import nilenso.com.kulu_mobile2.validations.AddExpenseActivity;
+import nilenso.com.kulu.validations.AddExpenseActivity;
+import nilenso.com.kulu.R;
 
 public class RecordNoProofExpense extends Record {
     private Validator validator;

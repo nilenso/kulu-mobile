@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile2.fragments;
+package nilenso.com.kulu.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import nilenso.com.kulu_mobile2.R;
+import nilenso.com.kulu.R;
 
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {

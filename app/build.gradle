@@ -6,7 +6,7 @@ android {
 
     compileSdkVersion 29
     defaultConfig {
-        applicationId 'nilenso.com.kulu_mobile2'
+        applicationId 'nilenso.com.kulu'
         minSdkVersion 27
         targetSdkVersion 29
         versionCode 22

@@ -1,8 +1,8 @@
-package nilenso.com.kulu_mobile2.expenses;
+package nilenso.com.kulu.expenses;
 
 import android.os.Bundle;
 
-import nilenso.com.kulu_mobile2.R;
+import nilenso.com.kulu.R;
 
 
 public class RecordExpense extends Record {

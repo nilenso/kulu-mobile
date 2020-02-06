@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile2;
+package nilenso.com.kulu;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import io.realm.RealmResults;
+import nilenso.com.kulu.R;
 
 public class InvoiceListAdapter extends ArrayAdapter<ExpenseEntry> {
     public InvoiceListAdapter(Context ctx, int viewResourceId, RealmResults<ExpenseEntry> fs) {

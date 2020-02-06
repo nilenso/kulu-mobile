@@ -1,4 +1,4 @@
-package nilenso.com.kulu_mobile2.validations;
+package nilenso.com.kulu.validations;
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
@@ -10,7 +10,7 @@ import com.mobsandgeeks.saripaar.Validator;
 import java.text.ParseException;
 import java.util.List;
 
-import nilenso.com.kulu_mobile2.expenses.RecordNoProofExpense;
+import nilenso.com.kulu.expenses.RecordNoProofExpense;
 
 public class AddExpenseActivity implements Validator.ValidationListener {
     private Context mContext;

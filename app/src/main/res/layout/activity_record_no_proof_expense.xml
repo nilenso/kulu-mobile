@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="nilenso.com.kulu_mobile2.expenses.RecordNoProofExpense">
+    tools:context="nilenso.com.kulu.nilenso.com.kulu.expenses.RecordNoProofExpense">
 
     <Button
         android:id="@+id/save"
