@@ -6,11 +6,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -101,13 +103,13 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 }
             } else {
 
-                File fileToUpload = new File(filePath);
                 final String s3ObjectKey = FileUtils.getLastPartOfFile(filePath);
+                File fileToUpload = new File("/storage/emulated/0/" + s3ObjectKey);
                 String s3BucketName = getContext().getString(R.string.kulu_s3_tmp_bucket);
                 final String msg = "Uploading " + s3ObjectKey + "...";
-
                 // create a new uploader for this file
                 Log.e(TAG, "Bucket " + s3BucketName + " " + s3ObjectKey + " " + fileToUpload);
+
                 Uploader uploader = new Uploader(getContext(), s3Client, s3BucketName, s3ObjectKey, fileToUpload, "image/jpeg");
                 uploader.setProgressListener(new UploadProgressListener() {
                     @Override

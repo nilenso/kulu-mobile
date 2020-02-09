@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
@@ -60,12 +62,24 @@ public class SplashScreen extends Activity {
                     @Override
                     public void onResponse(Response response) throws IOException {
 
-                        if (!response.isSuccessful())
-                            if (response.code() == 401){
-                                Toast.makeText(SplashScreen.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
-                            }else{
-                                Toast.makeText(SplashScreen.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        if (!response.isSuccessful()){
+                            if (response.code() == 401) {
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(SplashScreen.this, "Invalid credentials", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+
+                            } else {
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(SplashScreen.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                                    }
+                                });
                             }
+                        }
                         try {
                             String token = new JSONObject(response.body().string()).getString("token");
                             String teamName = ((EditText) findViewById(R.id.loginOrgName)).getText().toString();
@@ -75,7 +89,12 @@ public class SplashScreen extends Activity {
                             startMainActivity();
                         } catch (JSONException e) {
                             pd.dismiss();
-                            Toast.makeText(SplashScreen.this, "Couldn't clog in", Toast.LENGTH_SHORT).show();
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(SplashScreen.this, "Couldn't log in", Toast.LENGTH_LONG).show();
+                                }
+                            });
                             e.printStackTrace();
                         }
                     }

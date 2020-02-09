@@ -32,6 +32,8 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -153,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        JodaTimeAndroid.init(this);
         mAccount = CreateSyncAccount(this);
         updateView();
 
@@ -183,9 +186,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, 42);
+        String[] permissions = new String[] {Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_CONTACTS};
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission)
+                    == PackageManager.PERMISSION_DENIED) {
+                ActivityCompat.requestPermissions(this, new String[] {permission}, 42);
+            }
         }
         updateView();
     }
@@ -263,7 +270,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             File photoFile = null;
 
@@ -276,7 +282,12 @@ public class MainActivity extends AppCompatActivity {
             // continue only if the file was successfully created
             if (photoFile != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", photoFile));
+                        FileProvider.getUriForFile(this,
+                                BuildConfig.APPLICATION_ID+".provider",
+                                photoFile));
+
+                takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 startActivityForResult(takePictureIntent, 1);
             }
         }
@@ -285,8 +296,8 @@ public class MainActivity extends AppCompatActivity {
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
         String imageFileName = "IMG_" + timeStamp + UUID.randomUUID().toString();
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
+
+        File storageDir = Environment.getExternalStorageDirectory();
 
         Log.i(LOG_TAG, "Creating image file...");
         File mediaFile = File.createTempFile(
@@ -295,7 +306,8 @@ public class MainActivity extends AppCompatActivity {
                 storageDir      /* directory */
         );
 
-        mCurrentPhotoPath = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", mediaFile);
+        mCurrentPhotoPath = FileProvider.getUriForFile(this,
+                BuildConfig.APPLICATION_ID+".provider", mediaFile);
         saveCurrentPhotoPath();
         Log.e(LOG_TAG, "FILE path " + mCurrentPhotoPath);
         return mediaFile;

@@ -29,8 +29,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation files('libs/aws-android-sdk-2.0.5-core.jar')
-    implementation files('libs/gson-2.3.1.jar')
+    implementation group: 'com.amazonaws', name: 'aws-android-sdk-core', version: '2.16.8'
+    implementation group: 'com.amazonaws', name: 'aws-android-sdk-s3', version: '2.16.8'
+    implementation 'net.danlew:android.joda:2.10.3'
     implementation files('libs/commons-io-2.4.jar')
     implementation 'com.google.android.gms:play-services-identity:17.0.0'
     implementation 'com.google.android.gms:play-services-plus:17.0.0'
