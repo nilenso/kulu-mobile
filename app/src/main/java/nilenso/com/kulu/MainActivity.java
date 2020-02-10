@@ -105,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateView() {
-        setContentView(R.layout.activity_main);
         ListView invoiceList = (ListView) findViewById(R.id.listView);
         TextView empty = (TextView) findViewById(R.id.empty);
         syncMessage = (TextView) findViewById(R.id.syncmessage);
@@ -155,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         JodaTimeAndroid.init(this);
         mAccount = CreateSyncAccount(this);
         updateView();
@@ -162,6 +162,14 @@ public class MainActivity extends AppCompatActivity {
         Realm.getInstance(this).addChangeListener(syncListener);
         IntentFilter f = new IntentFilter(SyncAdapter.UPLOAD_FINISHED_ACTION);
         registerReceiver(uploadFinishedReceiver, f);
+        String[] permissions = new String[] {Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, permissions, 101);
+            }
+        }
     }
 
     private Account CreateSyncAccount(Context context) {
@@ -186,14 +194,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        String[] permissions = new String[] {Manifest.permission.CAMERA,
-                Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_CONTACTS};
-        for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission)
-                    == PackageManager.PERMISSION_DENIED) {
-                ActivityCompat.requestPermissions(this, new String[] {permission}, 42);
-            }
-        }
         updateView();
     }
 
