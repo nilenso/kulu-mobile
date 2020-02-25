@@ -16,6 +16,9 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ProgressEvent;
@@ -104,7 +107,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             } else {
 
                 final String s3ObjectKey = FileUtils.getLastPartOfFile(filePath);
-                File fileToUpload = new File("/storage/emulated/0/" + s3ObjectKey);
+                File fileToUpload = new File(
+                        getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + s3ObjectKey);
                 String s3BucketName = getContext().getString(R.string.kulu_s3_tmp_bucket);
                 final String msg = "Uploading " + s3ObjectKey + "...";
                 // create a new uploader for this file
@@ -198,15 +202,14 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private Notification buildNotification(String msg, int progress) {
-        Notification.Builder builder = new Notification.Builder(getContext());
-        builder.setWhen(System.currentTimeMillis());
-        builder.setTicker(msg);
-        builder.setContentTitle(getContext().getString(R.string.app_name));
-        builder.setAutoCancel(true);
-        builder.setSmallIcon(R.drawable.ic_launcher);
-        builder.setOngoing(true);
-        builder.setProgress(100, progress, false);
-        builder.setStyle(new Notification.BigTextStyle().bigText(msg));
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), MainActivity.UPLOAD_STATUS_CHANNEL);
+        builder.setWhen(System.currentTimeMillis())
+                .setTicker(msg)
+                .setContentTitle(getContext().getString(R.string.app_name))
+                .setAutoCancel(true).
+                setSmallIcon(R.drawable.ic_launcher)
+                .setOngoing(true)
+                .setProgress(100, progress, false);
         Intent notificationIntent = new Intent(getContext(), MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -218,15 +221,13 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private Notification buildNotification(String msg) {
-        Notification.Builder builder = new Notification.Builder(getContext());
-        builder.setWhen(System.currentTimeMillis());
-        builder.setTicker(msg);
-        builder.setContentTitle(getContext().getString(R.string.app_name));
-        builder.setAutoCancel(true);
-        builder.setSmallIcon(R.drawable.ic_launcher);
-        builder.setOngoing(false);
-
-        builder.setStyle(new Notification.BigTextStyle().bigText(msg));
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), MainActivity.UPLOAD_STATUS_CHANNEL);
+        builder.setWhen(System.currentTimeMillis())
+                .setTicker(msg)
+                .setContentTitle(getContext().getString(R.string.app_name))
+                .setAutoCancel(true)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setOngoing(false);
         Intent notificationIntent = new Intent(getContext(), MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 

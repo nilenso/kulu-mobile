@@ -3,6 +3,8 @@ package nilenso.com.kulu;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -12,10 +14,12 @@ import android.content.SharedPreferences;
 import android.content.SyncStatusObserver;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private String LOG_TAG = "MainActivity";
     public static final String INVOICE_LOCATION = "invoiceLocationFromCamera";
     public static final String CURRENT_PHOTO_PATH = "currentPhotoPath";
+    public static final String UPLOAD_STATUS_CHANNEL = "UPLOAD_STATUS_CHANNEL";
     public static final String DEFAULT_PHOTO_PATH = "";
     public static final String SYNC_STATUS = "syncStatus";
 
@@ -151,6 +156,15 @@ public class MainActivity extends AppCompatActivity {
         invoiceList.setAdapter(invoiceListAdapter);
     }
 
+    private void createNotificationChannel() {
+        CharSequence name = getString(R.string.upload_status);
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationChannel channel = new NotificationChannel(UPLOAD_STATUS_CHANNEL, name, importance);
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         Realm.getInstance(this).addChangeListener(syncListener);
         IntentFilter f = new IntentFilter(SyncAdapter.UPLOAD_FINISHED_ACTION);
         registerReceiver(uploadFinishedReceiver, f);
-        String[] permissions = new String[] {Manifest.permission.CAMERA,
+        String[] permissions = new String[]{Manifest.permission.CAMERA,
                 Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(this, permission)
@@ -170,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, permissions, 101);
             }
         }
+        createNotificationChannel();
     }
 
     private Account CreateSyncAccount(Context context) {
@@ -283,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
             if (photoFile != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                         FileProvider.getUriForFile(this,
-                                BuildConfig.APPLICATION_ID+".provider",
+                                BuildConfig.APPLICATION_ID + ".provider",
                                 photoFile));
 
                 takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION |
@@ -297,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
         String imageFileName = "IMG_" + timeStamp + UUID.randomUUID().toString();
 
-        File storageDir = Environment.getExternalStorageDirectory();
+        File storageDir = this.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
         Log.i(LOG_TAG, "Creating image file...");
         File mediaFile = File.createTempFile(
@@ -307,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
         );
 
         mCurrentPhotoPath = FileProvider.getUriForFile(this,
-                BuildConfig.APPLICATION_ID+".provider", mediaFile);
+                BuildConfig.APPLICATION_ID + ".provider", mediaFile);
         saveCurrentPhotoPath();
         Log.e(LOG_TAG, "FILE path " + mCurrentPhotoPath);
         return mediaFile;
